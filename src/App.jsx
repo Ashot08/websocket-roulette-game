@@ -1,6 +1,9 @@
 import {useEffect, useRef, useState} from 'react';
 import './App.css';
 import {useCookies} from "react-cookie";
+import Button from '@mui/material/Button';
+import {CircularProgress, Divider, List, ListItem, ListItemText, TextField} from "@mui/material";
+import ButtonAppBar from "./components/ButtonAppBar/ButtonAppBar.jsx";
 
 function App() {
     const socket = useRef();
@@ -25,6 +28,12 @@ function App() {
         setCookie('player_name', data.name, {maxAge: 10});
         setCookie('player_id', data.id, {maxAge: 10});
         setPlayer({ id: data.id, name: data.name ?? 'Без имени'});
+    }
+
+    function removePlayerData(){
+        setPlayer(null);
+        removeCookie('player_name');
+        removeCookie('player_id');
     }
 
     const createGame = async (e) => {
@@ -70,54 +79,98 @@ function App() {
 
   return (
     <>
+        <ButtonAppBar
+            buttonText={player ? 'Выйти' : 'Войти'}
+            buttonHandler={player ? removePlayerData : ()=>{} }
+        />
 
-        {!player
-            ?
-            <form onSubmit={
-                (e) => {
-                    e.preventDefault();
-                    setPlayerData({id: Math.random(), name: playerNameInput})
-                }
-            }>
-                <label htmlFor="">
-                    <span>Ваше имя</span>
-                    <input required={true} onInput={(e) => setPlayerNameInput(e.target.value)} type="text" name={name} placeholder={'Ваше имя'} value={playerNameInput}/>
-                </label>
-            </form>
-            :
+        <main>
             <div>
-                <div>
-                    <h4>Новая игра</h4>
-                    <form onSubmit={createGame} action="">
-                        <button>Создать</button>
+                {player && <div>{player.name} - {player.id}</div>}
+
+                {!player
+                    ?
+                    <form onSubmit={
+                        (e) => {
+                            e.preventDefault();
+                            setPlayerData({id: Math.random(), name: playerNameInput})
+                        }
+                    }>
+
+                        <TextField
+                            sx={{width: '100%'}}
+                            required={true}
+                            onInput={(e) => setPlayerNameInput(e.target.value)}
+                            id="name-input"
+                            label="Ваше имя"
+                            variant="outlined"
+                            type="text"
+                            name={'name'}
+                            value={playerNameInput}
+                        />
+                        <br/>
+                        <br/>
+                        <Button sx={{ width: '100%' }} type="submit" variant="contained">Создать</Button>
                     </form>
-                </div>
+                    :
 
-                <div>
-                    <h4>Присоединиться к игре</h4>
-                    <form onSubmit={joinGame} action="">
+                    <div>
+                        <List component="nav" aria-label="mailbox folders">
+                            <ListItem>
+                                <div>
+                                    <TextField
+                                        onInput={(e) => setPlayerNameInput(e.target.value)}
+                                        id="name-input"
+                                        label="Добро пожаловать"
+                                        variant="outlined"
+                                        type="text"
+                                        name={'name'}
+                                        placeholder={'Добро пожаловать'}
+                                        value={playerNameInput}
+                                        disabled={true}
+                                    />
+                                    <form onSubmit={createGame} action="">
+                                        <Button sx={{ my: 2, width: '100%', textAlign: 'center' }} type="submit" variant="contained">Новая игра</Button>
+                                    </form>
+                                </div>
+                            </ListItem>
+                            <Divider />
+                            <ListItem divider>
+                                <div>
+                                    <h4>Присоединиться к игре</h4>
+                                    <form onSubmit={joinGame} action="">
 
-                        <div>
-                            <label htmlFor="">
-                                <span>Id игры</span>
-                                <input required={true} onInput={(e) => {setGameIdInput(e.target.value)}} type="text" name={'game_id'} placeholder={'Id игры'} value={gameIdInput}/>
-                            </label>
-                        </div>
+                                        <div>
+                                            <label htmlFor="">
+                                                <TextField
+                                                    onInput={(e) => { setGameIdInput(e.target.value) }}
+                                                    required={true}
+                                                    id={'name-input'}
+                                                    label={'Id игры'}
+                                                    variant={'outlined'}
+                                                    type={'text'}
+                                                    name={'game_id'}
+                                                />
+                                            </label>
+                                        </div>
+                                        <Button sx={{ my: 2, width: '100%' }} type="submit" variant="contained">Присоединиться</Button>
+                                    </form>
+                                </div>
+                            </ListItem>
+                        </List>
 
-                        <button>Присоединиться!</button>
-                    </form>
 
-                </div>
+                    </div>
+
+                }
+
+                {connected ?
+                    games.map(g => <div key={g.id}>{g.id} - status: {g.status}</div>)
+                    :
+                    isLoading ? <CircularProgress sx={{ m: 2 }} /> : <button onClick={connect}>connect</button>
+                }
             </div>
-        }
-
-        {player && <div>{player.name} - {player.id}</div>}
-
-        {connected ?
-            games.map(g => <div key={g.id}>{g.id} - status: {g.status}</div>)
-            :
-            isLoading ? 'Loading...' : <button onClick={connect}>connect</button>
-        }
+        </main>
 
     </>
   )
