@@ -10,7 +10,8 @@ import ListItemText from '@mui/material/ListItemText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import AddIcon from '@mui/icons-material/Add';
-
+import QRCode from "react-qr-code";
+import {Chip} from "@mui/material";
 
 export default function Popup (props) {
     const { onClose, data, open } = props;
@@ -30,8 +31,14 @@ export default function Popup (props) {
 
                 {data.content}
 
-                <ListItem sx={{p: 2}} disableGutters>
-                    <div>Идентификатор игры: {data.gameId}</div>
+                <ListItem sx={{p: 2, justifyContent: 'center'}} disableGutters>
+                    <div>Идентификатор игры: <Chip variant="outlined" label={data.gameId} /></div>
+                </ListItem>
+
+                <ListItem sx={{p: 2, justifyContent: 'center'}} disableGutters>
+                    <div>
+                        <QRCode value={document.location.origin  + '/game/' + data.gameId} />
+                    </div>
                 </ListItem>
 
                 <ListItem disableGutters>
@@ -39,7 +46,10 @@ export default function Popup (props) {
                         autoFocus
                         onClick={() => handleListItemClick('addAccount')}
                     >
-                        Ссылка на игру: <a href={'/game/' + data.gameId}>/game/{data.gameId}</a>
+                        Ссылка на игру:
+                        <a href={document.location.origin + '/game/' + data.gameId}>
+                            {document.location.origin + '/game/' + data.gameId}
+                        </a>
                     </ListItemButton>
                 </ListItem>
             </List>

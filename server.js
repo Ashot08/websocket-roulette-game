@@ -5,7 +5,7 @@ const wss = new WebSocketServer({ port: 3000 }, ()=>console.log('listen 3000'));
 
 let games = new Map([
     [
-        's123', {status: 'finished', players: [], players_count: 3, turn: 0}
+        's123', {status: 'finished', players: [], players_count: 3, turn: 0, id: 's123'}
     ],
 ]);
 
