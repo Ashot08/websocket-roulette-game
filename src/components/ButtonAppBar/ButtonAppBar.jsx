@@ -22,6 +22,7 @@ import {
 } from "@mui/material";
 import {useState} from "react";
 import {ExpandLess, ExpandMore, StarBorder} from "@mui/icons-material";
+import {Link} from "react-router-dom";
 
 export default function ButtonAppBar(props) {
 
@@ -95,12 +96,16 @@ export default function ButtonAppBar(props) {
                                 </ListItemIcon>
                                 <ListItemText primary="Лобби"/>
                             </ListItemButton>
-                            <ListItemButton onClick={handleClose}>
-                                <ListItemIcon>
-                                    <HomeIcon/>
-                                </ListItemIcon>
-                                <ListItemText primary="Главная"/>
-                            </ListItemButton>
+                            <Link to={'/'}>
+                                <ListItemButton onClick={handleClose}>
+
+                                        <ListItemIcon>
+                                            <HomeIcon/>
+                                        </ListItemIcon>
+                                        <ListItemText sx={{color: 'rgba(0, 0, 0, 0.87)'}} primary="Главная"/>
+
+                                </ListItemButton>
+                            </Link>
                         </List>
 
                     </Menu>
@@ -109,7 +114,16 @@ export default function ButtonAppBar(props) {
 
                     </Typography>
 
-                    <Button onClick={props.buttonHandler} color="inherit">{props.buttonText}</Button>
+                    {props.buttonText === 'Войти'
+                    ?
+                        <Link to={'/'}>
+                            <Button sx={{color: '#fff'}} color="inherit">{props.buttonText}</Button>
+                        </Link>
+                    :
+                        <Button onClick={props.buttonHandler} color="inherit">{props.buttonText}</Button>
+                    }
+
+
                 </Toolbar>
             </AppBar>
         </Box>

@@ -31,27 +31,35 @@ export default function Popup (props) {
 
                 {data.content}
 
-                <ListItem sx={{p: 2, justifyContent: 'center'}} disableGutters>
-                    <div>Идентификатор игры: <Chip variant="outlined" label={data.gameId} /></div>
-                </ListItem>
+                {data.gameId
+                    ?
+                    <>
+                        <ListItem sx={{p: 2, justifyContent: 'center'}} disableGutters>
+                            <div>Идентификатор игры: <Chip variant="outlined" label={data.gameId} /></div>
+                        </ListItem>
 
-                <ListItem sx={{p: 2, justifyContent: 'center'}} disableGutters>
-                    <div>
-                        <QRCode value={document.location.origin  + '/game/' + data.gameId} />
-                    </div>
-                </ListItem>
 
-                <ListItem disableGutters>
-                    <ListItemButton
-                        autoFocus
-                        onClick={() => handleListItemClick('addAccount')}
-                    >
-                        Ссылка на игру:
-                        <a href={document.location.origin + '/game/' + data.gameId}>
-                            {document.location.origin + '/game/' + data.gameId}
-                        </a>
-                    </ListItemButton>
-                </ListItem>
+                        <ListItem sx={{p: 2, justifyContent: 'center'}} disableGutters>
+                            <div>
+                                <QRCode value={document.location.origin  + '/game/' + data.gameId} />
+                            </div>
+                        </ListItem>
+                        <ListItem disableGutters>
+                            <ListItemButton
+                                autoFocus
+                                onClick={() => handleListItemClick('addAccount')}
+                            >
+                                Ссылка на игру:
+                                <a href={document.location.origin + '/game/' + data.gameId}>
+                                    {document.location.origin + '/game/' + data.gameId}
+                                </a>
+                            </ListItemButton>
+                        </ListItem>
+                    </>
+                    :
+                    ''
+                }
+
             </List>
         </Dialog>
     );

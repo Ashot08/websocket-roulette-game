@@ -1,13 +1,23 @@
 import {useEffect, useRef, useState} from 'react';
 import {useCookies} from "react-cookie";
 import Button from '@mui/material/Button';
-import {CircularProgress, Divider, List, ListItem, ListItemText, TextField} from "@mui/material";
+import {
+    CircularProgress,
+    Divider, FormControl,
+    InputLabel,
+    List,
+    ListItem,
+    ListItemText,
+    MenuItem,
+    Select,
+    TextField
+} from "@mui/material";
 import ButtonAppBar from "../ButtonAppBar/ButtonAppBar.jsx";
 import Notification from "../Notification/Notification.jsx";
 import BasicCard from "../Card/BasicCard.jsx";
 import Popup from "../Popup/Popup.jsx";
 
-function App() {
+function StartPage() {
     const socket = useRef();
     const [games, setGames] = useState([]);
     const [connected, setConnected] = useState(false);
@@ -30,8 +40,8 @@ function App() {
     }, [])
 
     function setPlayerData(data){
-        setCookie('player_name', data.name, {maxAge: 10});
-        setCookie('player_id', data.id, {maxAge: 10});
+        setCookie('player_name', data.name, {maxAge: 10000});
+        setCookie('player_id', data.id, {maxAge: 10000});
         setPlayer({ id: data.id, name: data.name ?? 'Без имени'});
     }
 
@@ -60,8 +70,11 @@ function App() {
         socket.current.onopen = function(e) {
             setConnected(true);
             setIsLoading(false);
-            alert("[open] Соединение установлено");
-            alert("Отправляем данные на сервер");
+            setNotification({
+                text: `[open] Соединение установлено. Отправляем данные на сервер.`,
+                status: 'success'
+            });
+            setIsOpenNotification(true);
         };
 
         socket.current.onmessage = function message(event) {
@@ -105,16 +118,27 @@ function App() {
         };
         socket.current.onclose = function(event) {
             if (event.wasClean) {
-                alert(`[close] Соединение закрыто чисто, код=${event.code} причина=${event.reason}`);
+                setNotification({
+                    text: `[close] Соединение закрыто чисто, код=${event.code} причина=${event.reason}`,
+                    status: 'success'
+                });
+                setIsOpenNotification(true);
             } else {
-                // например, сервер убил процесс или сеть недоступна
-                // обычно в этом случае event.code 1006
-                alert('[close] Соединение прервано');
+                setNotification({
+                    text: `[close] Соединение прервано`,
+                    status: 'error'
+                });
+                setIsOpenNotification(true);
+
             }
         };
 
         socket.current.onerror = function(error) {
-            alert(`[error]`);
+            setNotification({
+                text: `[error]`,
+                status: 'error'
+            });
+            setIsOpenNotification(true);
         };
     }
 
@@ -166,7 +190,7 @@ function App() {
                             />
                             <br/>
                             <br/>
-                            <Button sx={{ width: '100%' }} type="submit" variant="contained">Создать</Button>
+                            <Button sx={{ width: '100%' }} type="submit" variant="contained">Войти</Button>
                         </form>
                         :
 
@@ -175,6 +199,7 @@ function App() {
                                 <ListItem>
                                     <div>
                                         <TextField
+                                            sx={{width: '100%'}}
                                             onInput={(e) => setPlayerNameInput(e.target.value)}
                                             id="name-input"
                                             label="Добро пожаловать"
@@ -185,20 +210,37 @@ function App() {
                                             value={playerNameInput}
                                             disabled={true}
                                         />
+                                        <FormControl sx={{my: 2}} fullWidth>
+                                            <InputLabel id="demo-simple-select-label">Количество игроков</InputLabel>
+                                            <Select
+                                                labelId="demo-simple-select-label"
+                                                id="demo-simple-select"
+                                                value={3}
+                                                label="Количество игроков"
+                                                onChange={()=>{}}
+                                            >
+                                                <MenuItem value={2}>2</MenuItem>
+                                                <MenuItem value={3}>3</MenuItem>
+                                                <MenuItem value={4}>4</MenuItem>
+                                                <MenuItem value={5}>5</MenuItem>
+                                                <MenuItem value={6}>6</MenuItem>
+                                            </Select>
+                                        </FormControl>
                                         <form onSubmit={createGame} action="">
                                             <Button sx={{ my: 2, width: '100%', textAlign: 'center' }} type="submit" variant="contained">Новая игра</Button>
                                         </form>
                                     </div>
                                 </ListItem>
                                 <Divider />
-                                <ListItem divider>
-                                    <div>
+                                <ListItem sx={{width: '100%'}} divider>
+                                    <div style={{width: '100%'}}>
                                         <h4>Присоединиться к игре</h4>
                                         <form onSubmit={joinGame} action="">
 
                                             <div>
                                                 <label htmlFor="">
                                                     <TextField
+                                                        sx={{width: "100%"}}
                                                         onInput={(e) => { setGameIdInput(e.target.value) }}
                                                         required={true}
                                                         id={'name-input'}
@@ -232,4 +274,4 @@ function App() {
     )
 }
 
-export default App
+export default StartPage

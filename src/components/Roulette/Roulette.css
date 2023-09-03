@@ -1,0 +1,27 @@
+@media(max-width: 768px){
+    .rouletteWrapper{
+        display: flex;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        overflow: hidden;
+    }
+    .rouletteWrapper > div{
+        min-width: 600px;
+        min-height: 600px;
+    }
+    .rouletteButtonWrapper{
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        z-index: 12;
+        width: 100%;
+        background-color: transparent;
+        padding: 20px;
+        padding-bottom: 60px;
+        text-align: right;
+    }
+    .rouletteButtonWrapper button{
+        font-size: 16px;
+        padding: 10px 20px;
+    }
+}

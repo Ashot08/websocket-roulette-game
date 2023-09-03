@@ -8,7 +8,91 @@ let games = new Map([
         's123', {status: 'finished', players: [], players_count: 3, turn: 0, id: 's123'}
     ],
 ]);
-
+const rouletteData = [
+    {
+        option: 'Групповой, летальный',
+        optionSize: 2,
+        // image: {
+        //     uri: '/src/assets/logo.svg',
+        // },
+        style: {
+            backgroundColor: '#660000',
+            fontSize: 14,
+            textColor: '#fff'
+        },
+        fullName: 'Групповой, летальный НС'
+    },
+    {
+        option: 'Бонус',
+        optionSize: 5,
+        style: {
+            backgroundColor: 'green',
+            fontSize: 16,
+            textColor: '#fff'
+        },
+        fullName: 'всё ок, вам бонус!'
+    },
+    {
+        option: 'Тяжелый',
+        optionSize: 4,
+        style: {
+            backgroundColor: '#c50000',
+            fontSize: 16,
+            textColor: '#fff'
+        },
+        fullName: 'Тяжелый НС'
+    },
+    {
+        option: 'Микротравма',
+        optionSize: 5,
+        style: {
+            backgroundColor: 'orange',
+            fontSize: 16,
+            textColor: '#333'
+        },
+        fullName: 'Микротравма'
+    },
+    {
+        option: 'Летальный',
+        optionSize: 3,
+        style: {
+            backgroundColor: '#660000',
+            fontSize: 16,
+            textColor: '#fff'
+        },
+        fullName: 'Летальный НС'
+    },
+    {
+        option: 'Легкий',
+        optionSize: 5,
+        style: {
+            backgroundColor: '#ffae42',
+            fontSize: 16,
+            textColor: '#333'
+        },
+        fullName: 'Легкий НС'
+    },
+    {
+        option: 'Групповой',
+        optionSize: 5,
+        style: {
+            backgroundColor: '#c50000',
+            fontSize: 16,
+            textColor: '#fff'
+        },
+        fullName: 'Групповой НС'
+    },
+    {
+        option: 'Микротравма',
+        optionSize: 5,
+        style: {
+            backgroundColor: 'orange',
+            fontSize: 16,
+            textColor: '#333'
+        },
+        fullName: 'Микротравма'
+    },
+]
 const players =
 
 wss.on('connection', function connection(ws) {
@@ -72,7 +156,20 @@ wss.on('connection', function connection(ws) {
                     ws.send(JSON.stringify(message));
                     break;
                 }
+                if(!data.player.id || !data.player.name){
+                    const message = {
+                        type: 'message',
+                        action: 'notification',
+                        text: 'Ошибочные данные пользователя, попробуйте залогиниться заново или перезагрузить страницу',
+                        status: 'failed'
+                    }
+                    ws.send(JSON.stringify(message));
+                    break;
+                }
                 game.players.push(data.player);
+                if(game.players.length === game.players_count){
+                    game.status = 'in_process';
+                }
                 const message = {
                     type: 'message',
                     action: 'onJoinGame',
@@ -81,10 +178,48 @@ wss.on('connection', function connection(ws) {
                     id: game.id
                 }
                 ws.send(JSON.stringify(message));
-                console.log(games.get(data.game_id).players);
                 break;
             }
+            case 'get_game_state': {
+                const gameId = data.game_id;
+                const gameState = games.get(gameId);
 
+                if(!gameState){
+                    const message = {
+                        type: 'message',
+                        action: 'onGetGameState',
+                        status: 'failed',
+                        text: `Игры с таким ID (${gameId}) не существует`,
+                    }
+                    ws.send(JSON.stringify(message));
+                    break;
+                }
+
+                const message = {
+                    type: 'message',
+                    action: 'onGetGameState',
+                    status: 'success',
+                    state: {
+                        ...gameState,
+                        rouletteSpin: data.rouletteSpin,
+                        roulettePrizeNumber: data.roulettePrizeNumber,
+                    },
+                    id: gameId,
+                }
+                ws.send(JSON.stringify(message));
+
+                break;
+            }
+            case 'spin_roulette': {
+                const message = {
+                    type: 'message',
+                    action: 'onSpinRoulette',
+                    result: Math.floor(Math.random() * rouletteData.length),
+                    status: 'success',
+                }
+                ws.send(JSON.stringify(message));
+                break;
+            }
             default: {
                 const message = {
                     type: 'message',

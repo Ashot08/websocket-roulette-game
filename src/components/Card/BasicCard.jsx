@@ -23,8 +23,11 @@ export default function BasicCard(props) {
                     {props.name}
                 </Typography>
                 <Typography variant="body2">
-                    id: {props.id}
+                    {props.id}
                 </Typography>
+
+                {props.content}
+
             </CardContent>
             {/*<CardActions>*/}
             {/*    <Button size="small">Learn More</Button>*/}
