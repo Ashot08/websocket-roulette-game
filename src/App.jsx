@@ -6,6 +6,7 @@ import {CircularProgress, Divider, List, ListItem, ListItemText, TextField} from
 import ButtonAppBar from "./components/ButtonAppBar/ButtonAppBar.jsx";
 import Notification from "./components/Notification/Notification.jsx";
 import BasicCard from "./components/Card/BasicCard.jsx";
+import Popup from "./components/Popup/Popup.jsx";
 
 function App() {
     const socket = useRef();
@@ -17,6 +18,7 @@ function App() {
     const [playerNameInput, setPlayerNameInput] = useState('');
     const [gameIdInput, setGameIdInput] = useState('');
     const [isOpenNotification, setIsOpenNotification] = useState(false);
+    const [popup, setPopup] = useState({onClose: ()=>{}, data: {}, open: false});
     const [cookies, setCookie, removeCookie] = useCookies(['player_name', 'player_id']);
 
 
@@ -72,7 +74,33 @@ function App() {
                         status: 'error'
                     });
                     setIsOpenNotification(true);
+                    break;
                 }
+                case 'onGameCreated': {
+                    setPopup({
+                        ...popup,
+                        open: true,
+                        data: {
+                            title: data.text,
+                            content: '',
+                            gameId: data.id
+                        }
+                    })
+                    break;
+                }
+                case 'onJoinGame': {
+                    setPopup({
+                        ...popup,
+                        open: true,
+                        data: {
+                            title: data.text,
+                            content: '',
+                            gameId: data.id
+                        }
+                    })
+                    break;
+                }
+                default: {return;}
             }
             console.log(event.data)
         };
@@ -108,11 +136,12 @@ function App() {
             }}
             isOpen={isOpenNotification}
         />
+
+        <Popup onClose={()=>setPopup({...popup, open: false})} data={popup.data} open={popup.open} />
+
         <main>
 
             <div>
-
-
 
                 {player && <BasicCard name={player.name} id={player.id} />}
 

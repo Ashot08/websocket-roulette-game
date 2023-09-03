@@ -57,7 +57,7 @@ wss.on('connection', function connection(ws) {
                         type: 'message',
                         action: 'notification',
                         text: 'Все места в игре заняты!',
-                        status: 'failed'
+                        status: 'failed',
                     }
                     ws.send(JSON.stringify(message));
                     break;
@@ -77,7 +77,8 @@ wss.on('connection', function connection(ws) {
                     type: 'message',
                     action: 'onJoinGame',
                     text: 'Вы добавлены в игру!',
-                    status: 'success'
+                    status: 'success',
+                    id: game.id
                 }
                 ws.send(JSON.stringify(message));
                 console.log(games.get(data.game_id).players);
