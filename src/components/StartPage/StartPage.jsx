@@ -46,9 +46,9 @@ function StartPage() {
     }
 
     function removePlayerData(){
-        setPlayer(null);
         removeCookie('player_name');
         removeCookie('player_id');
+        setPlayer(null);
     }
 
     const createGame = async (e) => {

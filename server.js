@@ -175,15 +175,19 @@ wss.on('connection', function connection(ws) {
                     action: 'onJoinGame',
                     text: 'Вы добавлены в игру!',
                     status: 'success',
-                    id: game.id
+                    id: game.id,
                 }
+                //broadcastMessage(message);
                 ws.send(JSON.stringify(message));
                 break;
             }
             case 'get_game_state': {
                 const gameId = data.game_id;
                 const gameState = games.get(gameId);
-
+                if(data.roll === true) {
+                    gameState.doRoll = true;
+                    gameState.prizeNumber = Math.floor(Math.random() * rouletteData.length);
+                }
                 if(!gameState){
                     const message = {
                         type: 'message',
@@ -201,25 +205,14 @@ wss.on('connection', function connection(ws) {
                     status: 'success',
                     state: {
                         ...gameState,
-                        rouletteSpin: data.rouletteSpin,
-                        roulettePrizeNumber: data.roulettePrizeNumber,
                     },
                     id: gameId,
                 }
-                ws.send(JSON.stringify(message));
+                broadcastMessage(message);
+                //ws.send(JSON.stringify(message));
+                break;
+            }
 
-                break;
-            }
-            case 'spin_roulette': {
-                const message = {
-                    type: 'message',
-                    action: 'onSpinRoulette',
-                    result: Math.floor(Math.random() * rouletteData.length),
-                    status: 'success',
-                }
-                ws.send(JSON.stringify(message));
-                break;
-            }
             default: {
                 const message = {
                     type: 'message',
@@ -234,3 +227,9 @@ wss.on('connection', function connection(ws) {
 
     ws.send(JSON.stringify(games));
 });
+
+function broadcastMessage(message, id = 0) {
+    wss.clients.forEach(client => {
+        client.send(JSON.stringify(message))
+    })
+}

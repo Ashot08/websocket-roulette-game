@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import { Wheel } from 'react-custom-roulette';
 import './Roulette.css';
 import arrowImage from './img/arrow.svg';
+import Notification from "../Notification/Notification.jsx";
 
 const data = [
     {
@@ -89,13 +90,14 @@ const data = [
     },
 ]
 export default (props) => {
-    const [mustSpin, setMustSpin] = useState(props.rouletteSpin);
+    const [mustSpin, setMustSpin] = useState(false);
     const [prizeNumber, setPrizeNumber] = useState(0);
 
     useEffect(() => {
         setPrizeNumber(props.prizeNumber);
-        setMustSpin(props.rouletteSpin);
-    }, [props.prizeNumber]);
+        setMustSpin(props.doRoll);
+        console.log(mustSpin, prizeNumber)
+    }, [props.doRoll, props.prizeNumber]);
 
     // const handleSpinClick = () => {
     //     if (!mustSpin) {

@@ -20,13 +20,12 @@ function Game() {
     const [isLoading, setIsLoading] = useState(false);
     const [notification, setNotification] = useState({text: '', status: ''});
     const [player, setPlayer] = useState(null);
-    const [rouletteSpin, setRouletteSpin] = useState(false);
-    const [roulettePrizeNumber, setRoulettePrizeNumber] = useState(0);
     const [playerNameInput, setPlayerNameInput] = useState('');
     const [gameIdInput, setGameIdInput] = useState('');
     const [isOpenNotification, setIsOpenNotification] = useState(false);
     const [popup, setPopup] = useState({onClose: ()=>{}, data: {}, open: false});
     const [cookies, setCookie, removeCookie] = useCookies(['player_name', 'player_id']);
+    const [doRoll, setDoRoll] = useState(false);
 
     const params = useParams();
 
@@ -44,15 +43,13 @@ function Game() {
                 socket.current.send(JSON.stringify({
                     action: 'get_game_state',
                     game_id: params.gameId,
-                    rouletteSpin,
-                    roulettePrizeNumber
                 }
                     )
                 );
             }, 50)
 
         }
-    }, [connected, roulettePrizeNumber]);
+    }, [connected]);
 
     function setPlayerData(data){
         setCookie('player_name', data.name, {maxAge: 10000});
@@ -60,24 +57,18 @@ function Game() {
         setPlayer({ id: data.id, name: data.name ?? 'Без имени'});
     }
     function removePlayerData(){
-        setPlayer(null);
         removeCookie('player_name');
         removeCookie('player_id');
+        setPlayer(null);
     }
 
     const joinGame = async (e) => {
         e.preventDefault();
         socket.current.send(JSON.stringify({action: 'join_player', game_id: params.gameId, player: {...player}}));
-        socket.current.send(JSON.stringify({
-            action: 'get_game_state',
-            game_id: params.gameId,
-            rouletteSpin,
-            roulettePrizeNumber,
-        }));
     }
 
     const onRoulettePressSpin = () => {
-        socket.current.send(JSON.stringify({action: 'spin_roulette', game_id: params.gameId}));
+        socket.current.send(JSON.stringify({action: 'get_game_state', game_id: params.gameId, roll: true}));
     }
     function connect(){
 
@@ -120,6 +111,7 @@ function Game() {
                     break;
                 }
                 case 'onJoinGame': {
+
                     setPopup({
                         ...popup,
                         open: true,
@@ -129,12 +121,8 @@ function Game() {
                             gameId: data.id
                         }
                     })
-                    socket.current.send(JSON.stringify({
-                        action: 'get_game_state',
-                        game_id: params.gameId,
-                        rouletteSpin,
-                        roulettePrizeNumber,
-                    }));
+
+                    socket.current.send(JSON.stringify({action: 'get_game_state', game_id: params.gameId}));
                     break;
                 }
                 case 'onGetGameState': {
@@ -161,18 +149,15 @@ function Game() {
                         setGame({
                             ...data.state,
                         })
+                        setDoRoll(data.state.doRoll);
                     }
-                    break;
-                }
-                case 'onSpinRoulette': {
-                    setRouletteSpin(true);
-                    setRoulettePrizeNumber(data.result);
+
                     break;
                 }
 
                 default: {return;}
             }
-            console.log(event.data)
+
         };
         socket.current.onclose = function(event) {
             if (event.wasClean) {
@@ -265,9 +250,8 @@ function Game() {
                                         <div>
                                             {player && <BasicCard name={''} id={'Ходит ' + game.players[game.turn].name} />}
                                         </div>
-                                        <Roulette rouletteSpin={game.rouletteSpin} prizeNumber={game.roulettePrizeNumber} handleSpinClick={onRoulettePressSpin} />
+                                        <Roulette doRoll={game.doRoll ?? false} prizeNumber={game.prizeNumber ?? 0} handleSpinClick={onRoulettePressSpin} />
                                     </>
-
                                 }
                             </>
 
