@@ -4,15 +4,19 @@ import {useCookies} from "react-cookie";
 import Button from '@mui/material/Button';
 import {CircularProgress, Divider, List, ListItem, ListItemText, TextField} from "@mui/material";
 import ButtonAppBar from "./components/ButtonAppBar/ButtonAppBar.jsx";
+import Notification from "./components/Notification/Notification.jsx";
+import BasicCard from "./components/Card/BasicCard.jsx";
 
 function App() {
     const socket = useRef();
     const [games, setGames] = useState([]);
     const [connected, setConnected] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [notification, setNotification] = useState({text: '', status: ''});
     const [player, setPlayer] = useState(null);
     const [playerNameInput, setPlayerNameInput] = useState('');
     const [gameIdInput, setGameIdInput] = useState('');
+    const [isOpenNotification, setIsOpenNotification] = useState(false);
     const [cookies, setCookie, removeCookie] = useCookies(['player_name', 'player_id']);
 
 
@@ -60,6 +64,16 @@ function App() {
         };
 
         socket.current.onmessage = function message(event) {
+            const data = JSON.parse(event.data);
+            switch (data.action) {
+                case 'notification': {
+                    setNotification({
+                        text: data.text,
+                        status: 'error'
+                    });
+                    setIsOpenNotification(true);
+                }
+            }
             console.log(event.data)
         };
         socket.current.onclose = function(event) {
@@ -83,10 +97,24 @@ function App() {
             buttonText={player ? 'Выйти' : 'Войти'}
             buttonHandler={player ? removePlayerData : ()=>{} }
         />
-
+        <Notification
+            text={notification.text}
+            status={notification.status}
+            onClose={(event, reason) => {
+                if (reason === 'clickaway') {
+                    return;
+                }
+                setIsOpenNotification(false)
+            }}
+            isOpen={isOpenNotification}
+        />
         <main>
+
             <div>
-                {player && <div>{player.name} - {player.id}</div>}
+
+
+
+                {player && <BasicCard name={player.name} id={player.id} />}
 
                 {!player
                     ?

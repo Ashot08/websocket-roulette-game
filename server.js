@@ -26,6 +26,7 @@ wss.on('connection', function connection(ws) {
                 games.set(id, game);
                 const message = {
                     type: 'message',
+                    action: 'onGameCreated',
                     text: 'Игра создана',
                     status: 'success',
                     id: game.id,
@@ -39,9 +40,22 @@ wss.on('connection', function connection(ws) {
             case 'join_player': {
                 const game = games.get(data.game_id);
 
+                if(typeof game !== "object") {
+                    const message = {
+                        type: 'message',
+                        action: 'notification',
+                        text: 'Игры с таким  ID не существует!',
+                        status: 'failed'
+                    }
+                    console.log(data.game_id);
+                    ws.send(JSON.stringify(message));
+                    break;
+                }
+
                 if(game.players.length >= game.players_count) {
                     const message = {
                         type: 'message',
+                        action: 'notification',
                         text: 'Все места в игре заняты!',
                         status: 'failed'
                     }
@@ -51,6 +65,7 @@ wss.on('connection', function connection(ws) {
                 if(game.players.find(p => p.id === data.player.id)){
                     const message = {
                         type: 'message',
+                        action: 'notification',
                         text: 'Вы уже в игре!',
                         status: 'failed'
                     }
@@ -60,6 +75,7 @@ wss.on('connection', function connection(ws) {
                 game.players.push(data.player);
                 const message = {
                     type: 'message',
+                    action: 'onJoinGame',
                     text: 'Вы добавлены в игру!',
                     status: 'success'
                 }
@@ -68,7 +84,15 @@ wss.on('connection', function connection(ws) {
                 break;
             }
 
-            default: throw new Error(`action '${data.action}' is undefined`);
+            default: {
+                const message = {
+                    type: 'message',
+                    action: 'notification',
+                    text: `action '${data.action}' is undefined`,
+                    status: 'failed'
+                }
+                ws.send(JSON.stringify(message));
+            }
         }
     });
 
