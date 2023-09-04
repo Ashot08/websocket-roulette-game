@@ -65,7 +65,8 @@ function StartPage() {
 
         setIsLoading(true)
 
-        socket.current = new WebSocket("ws://localhost:3000/");
+        socket.current = new WebSocket("ws://80.90.189.247:3000/");
+        //socket.current = new WebSocket("ws://localhost:3000/");
 
         socket.current.onopen = function(e) {
             setConnected(true);
@@ -80,6 +81,11 @@ function StartPage() {
         socket.current.onmessage = function message(event) {
             const data = JSON.parse(event.data);
             switch (data.action) {
+                case 'onGetGames': {
+                    console.log(data.data, "GAMES!")
+                    setGames(data.data);
+                    break;
+                }
                 case 'notification': {
                     setNotification({
                         text: data.text,
@@ -114,7 +120,6 @@ function StartPage() {
                 }
                 default: {return;}
             }
-            console.log(event.data)
         };
         socket.current.onclose = function(event) {
             if (event.wasClean) {
@@ -147,6 +152,7 @@ function StartPage() {
             <ButtonAppBar
                 buttonText={player ? 'Выйти' : 'Войти'}
                 buttonHandler={player ? removePlayerData : ()=>{} }
+                games={games}
             />
             <Notification
                 text={notification.text}
@@ -262,11 +268,11 @@ function StartPage() {
 
                     }
 
-                    {connected ?
-                        games.map(g => <div key={g.id}>{g.id} - status: {g.status}</div>)
-                        :
-                        isLoading ? <CircularProgress sx={{ m: 2 }} /> : <button onClick={connect}>connect</button>
-                    }
+                    {/*{connected ?*/}
+                    {/*    games.map(g => <div key={g.id}>{g.id} - status: {g.status}</div>)*/}
+                    {/*    :*/}
+                    {/*    isLoading ? <CircularProgress sx={{ m: 2 }} /> : <button onClick={connect}>connect</button>*/}
+                    {/*}*/}
                 </div>
             </main>
 

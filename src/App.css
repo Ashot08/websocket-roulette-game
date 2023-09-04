@@ -11,7 +11,7 @@ main{
 @media(max-width: 768px){
     main{
         max-width: 100%;
-        padding: 60px 20px;
+        padding: 60px 0;
     }
     .gameWrapper{
         width: 100%;

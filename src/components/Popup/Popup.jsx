@@ -12,6 +12,7 @@ import Dialog from '@mui/material/Dialog';
 import AddIcon from '@mui/icons-material/Add';
 import QRCode from "react-qr-code";
 import {Chip} from "@mui/material";
+import {Link} from "react-router-dom";
 
 export default function Popup (props) {
     const { onClose, data, open } = props;
@@ -50,9 +51,9 @@ export default function Popup (props) {
                                 onClick={() => handleListItemClick('addAccount')}
                             >
                                 Ссылка на игру:
-                                <a href={document.location.origin + '/game/' + data.gameId}>
+                                <Link to={document.location.origin + '/game/' + data.gameId}>
                                     {document.location.origin + '/game/' + data.gameId}
-                                </a>
+                                </Link>
                             </ListItemButton>
                         </ListItem>
                     </>

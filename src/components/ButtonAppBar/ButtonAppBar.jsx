@@ -84,9 +84,16 @@ export default function ButtonAppBar(props) {
                             </ListItemButton>
                             <Collapse in={open} timeout="auto" unmountOnExit>
                                 <List component="div" disablePadding>
-                                    <ListItemButton sx={{pl: 4}}>
-                                        <ListItemText primary="Игра 1"/>
-                                    </ListItemButton>
+                                    {props.games && props.games.map((g) => {
+                                        return (
+                                            <ListItemButton key={'game' + g[0]} sx={{pl: 4}}>
+                                                <Link to={'/game/' + g[0]}>
+                                                    <ListItemText primary={'Игра ' + g[0]}/>
+                                                </Link>
+                                            </ListItemButton>
+                                        );
+                                    })}
+
                                 </List>
                             </Collapse>
 

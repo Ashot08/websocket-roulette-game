@@ -98,6 +98,16 @@ const players =
 wss.on('connection', function connection(ws) {
     ws.on('error', console.error);
 
+    wss.on('connection', function connection(ws) {
+        const message = {
+            type: 'message',
+            action: 'onGetGames',
+            data: Array.from(games),
+            status: 'success',
+        }
+        broadcastMessage(message)
+    })
+
     ws.on('message', function message(data) {
         data = JSON.parse(data);
 
@@ -185,6 +195,11 @@ wss.on('connection', function connection(ws) {
                 const gameId = data.game_id;
                 const gameState = games.get(gameId);
                 if(data.roll === true) {
+                    if(gameState.turn < gameState.players.length - 1) {
+                        gameState.turn++;
+                    } else {
+                        gameState.turn = 0;
+                    }
                     gameState.doRoll = true;
                     gameState.prizeNumber = Math.floor(Math.random() * rouletteData.length);
                 }

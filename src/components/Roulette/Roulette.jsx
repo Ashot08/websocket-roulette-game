@@ -2,7 +2,8 @@ import React, {useEffect, useState} from 'react';
 import { Wheel } from 'react-custom-roulette';
 import './Roulette.css';
 import arrowImage from './img/arrow.svg';
-import Notification from "../Notification/Notification.jsx";
+import Popup from "../Popup/Popup.jsx";
+import BasicCard from "../Card/BasicCard.jsx";
 
 const data = [
     {
@@ -92,6 +93,7 @@ const data = [
 export default (props) => {
     const [mustSpin, setMustSpin] = useState(false);
     const [prizeNumber, setPrizeNumber] = useState(0);
+    const [popup, setPopup] = useState({onClose: ()=>{}, data: {}, open: false});
 
     useEffect(() => {
         setPrizeNumber(props.prizeNumber);
@@ -99,16 +101,10 @@ export default (props) => {
         console.log(mustSpin, prizeNumber)
     }, [props.doRoll, props.prizeNumber]);
 
-    // const handleSpinClick = () => {
-    //     if (!mustSpin) {
-    //         const newPrizeNumber = Math.floor(Math.random() * data.length);
-    //         setPrizeNumber(newPrizeNumber);
-    //         setMustSpin(true);
-    //     }
-    // }
-
     return (
         <>
+            <Popup onClose={()=>setPopup({...popup, open: false})} data={popup.data} open={popup.open} />
+
             <div className="rouletteWrapper">
                 <Wheel
                     mustStartSpinning={mustSpin}
@@ -119,7 +115,18 @@ export default (props) => {
                     textDistance={55}
                     pointerProps={{src: arrowImage}}
                     onStopSpinning={() => {
-                        alert(`На вашем предприятии ${data[prizeNumber].fullName}`)
+                        //alert(`На вашем предприятии ${data[prizeNumber].fullName}`)
+
+                        const turn = (props.game.turn === 0) ? ( props.game.players.length - 1 ) : ( props.game.turn - 1 );
+                        console.log(props.game, turn)
+                        setPopup({
+                            ...popup,
+                            open: true,
+                            data: {
+                                title: '',
+                                content: <BasicCard style={{textAlign: 'center'}} name={<div style={{textAlign: 'center'}}>Ход  <strong>{props.game.players[turn].name}</strong></div>} id={`У ${props.game.players[turn].name} на предприятии ${data[prizeNumber].fullName}`} />,
+                            }
+                        })
                         setMustSpin(false);
                     }}
                 />

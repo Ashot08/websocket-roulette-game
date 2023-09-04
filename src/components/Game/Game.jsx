@@ -74,7 +74,8 @@ function Game() {
 
         setIsLoading(true)
 
-        socket.current = new WebSocket("ws://localhost:3000/");
+        socket.current = new WebSocket("ws://80.90.189.247:3000/");
+        //socket.current = new WebSocket("ws://localhost:3000/");
 
         socket.current.onopen = function(e) {
             setConnected(true);
@@ -90,6 +91,11 @@ function Game() {
         socket.current.onmessage = function message(event) {
             const data = JSON.parse(event.data);
             switch (data.action) {
+                case 'onGetGames': {
+                    console.log(data.data, "GAMES!")
+                    setGames(data.data);
+                    break;
+                }
                 case 'notification': {
                     setNotification({
                         text: data.text,
@@ -190,6 +196,7 @@ function Game() {
             <ButtonAppBar
                 buttonText={player ? 'Выйти' : 'Войти'}
                 buttonHandler={player ? removePlayerData : ()=>{console.log('redirect');} }
+                games={games}
             />
             <Notification
                 text={notification.text}
@@ -250,7 +257,7 @@ function Game() {
                                         <div>
                                             {player && <BasicCard name={''} id={'Ходит ' + game.players[game.turn].name} />}
                                         </div>
-                                        <Roulette doRoll={game.doRoll ?? false} prizeNumber={game.prizeNumber ?? 0} handleSpinClick={onRoulettePressSpin} />
+                                        <Roulette game={game} doRoll={game.doRoll ?? false} prizeNumber={game.prizeNumber ?? 0} handleSpinClick={onRoulettePressSpin} />
                                     </>
                                 }
                             </>
@@ -328,11 +335,11 @@ function Game() {
 
 
 
-                    {connected ?
-                        games.map(g => <div key={g.id}>{g.id} - status: {g.status}</div>)
-                        :
-                        isLoading && <CircularProgress sx={{ m: 2 }} />
-                    }
+                    {/*{connected ?*/}
+                    {/*    games.map(g => <div key={g.id}>{g.id} - status: {g.status}</div>)*/}
+                    {/*    :*/}
+                    {/*    isLoading && <CircularProgress sx={{ m: 2 }} />*/}
+                    {/*}*/}
                 </div>
             </main>
 
