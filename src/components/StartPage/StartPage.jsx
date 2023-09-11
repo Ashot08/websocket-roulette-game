@@ -2,12 +2,10 @@ import {useEffect, useRef, useState} from 'react';
 import {useCookies} from "react-cookie";
 import Button from '@mui/material/Button';
 import {
-    CircularProgress,
     Divider, FormControl,
     InputLabel,
     List,
     ListItem,
-    ListItemText,
     MenuItem,
     Select,
     TextField
@@ -16,6 +14,8 @@ import ButtonAppBar from "../ButtonAppBar/ButtonAppBar.jsx";
 import Notification from "../Notification/Notification.jsx";
 import BasicCard from "../Card/BasicCard.jsx";
 import Popup from "../Popup/Popup.jsx";
+import {useDispatch, useSelector} from "react-redux";
+import {logoutPlayerAction, setPlayerAction} from "../../store/playerReducer.js";
 
 function StartPage() {
     const socket = useRef();
@@ -23,32 +23,35 @@ function StartPage() {
     const [connected, setConnected] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [notification, setNotification] = useState({text: '', status: ''});
-    const [player, setPlayer] = useState(null);
+    //const [player, setPlayer] = useState(null);
     const [playerNameInput, setPlayerNameInput] = useState('');
     const [gameIdInput, setGameIdInput] = useState('');
     const [isOpenNotification, setIsOpenNotification] = useState(false);
     const [popup, setPopup] = useState({onClose: ()=>{}, data: {}, open: false});
     const [cookies, setCookie, removeCookie] = useCookies(['player_name', 'player_id']);
 
+    const dispatch = useDispatch();
+    const player = useSelector(state => state.player.player);
 
     useEffect(() =>  {
         connect();
-        if(cookies.player_id) setPlayer({
-            id: cookies.player_id,
-            name: cookies.player_name ?? 'Без имени',
-        });
+        if(!player && cookies.player_id)
+            dispatch(setPlayerAction({
+                id: cookies.player_id,
+                name: cookies.player_name ?? 'Без имени',
+            }))
     }, [])
 
     function setPlayerData(data){
         setCookie('player_name', data.name, {maxAge: 10000});
         setCookie('player_id', data.id, {maxAge: 10000});
-        setPlayer({ id: data.id, name: data.name ?? 'Без имени'});
+        dispatch(setPlayerAction({ id: data.id, name: data.name ?? 'Без имени'}));
     }
 
     function removePlayerData(){
         removeCookie('player_name');
         removeCookie('player_id');
-        setPlayer(null);
+        dispatch(logoutPlayerAction())
     }
 
     const createGame = async (e) => {
@@ -65,8 +68,8 @@ function StartPage() {
 
         setIsLoading(true)
 
-        socket.current = new WebSocket("ws://80.90.189.247:3000/");
-        //socket.current = new WebSocket("ws://localhost:3000/");
+        //socket.current = new WebSocket("ws://80.90.189.247:3000/");
+        socket.current = new WebSocket("ws://localhost:3000/");
 
         socket.current.onopen = function(e) {
             setConnected(true);
@@ -268,11 +271,6 @@ function StartPage() {
 
                     }
 
-                    {/*{connected ?*/}
-                    {/*    games.map(g => <div key={g.id}>{g.id} - status: {g.status}</div>)*/}
-                    {/*    :*/}
-                    {/*    isLoading ? <CircularProgress sx={{ m: 2 }} /> : <button onClick={connect}>connect</button>*/}
-                    {/*}*/}
                 </div>
             </main>
 

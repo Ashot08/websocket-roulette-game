@@ -74,8 +74,8 @@ function Game() {
 
         setIsLoading(true)
 
-        socket.current = new WebSocket("ws://80.90.189.247:3000/");
-        //socket.current = new WebSocket("ws://localhost:3000/");
+        //socket.current = new WebSocket("ws://80.90.189.247:3000/");
+        socket.current = new WebSocket("ws://localhost:3000/");
 
         socket.current.onopen = function(e) {
             setConnected(true);
@@ -257,6 +257,7 @@ function Game() {
                                         <div>
                                             {player && <BasicCard name={''} id={'Ходит ' + game.players[game.turn].name} />}
                                         </div>
+
                                         <Roulette game={game} doRoll={game.doRoll ?? false} prizeNumber={game.prizeNumber ?? 0} handleSpinClick={onRoulettePressSpin} />
                                     </>
                                 }

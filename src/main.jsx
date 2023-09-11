@@ -10,6 +10,8 @@ import '@fontsource/roboto/700.css';
 import { createTheme } from '@mui/material/styles';
 import {ThemeProvider} from "@mui/material";
 import {BrowserRouter} from "react-router-dom";
+import {Provider} from "react-redux";
+import {store} from "./store/index.js";
 
 const theme = createTheme({
     palette: {
@@ -28,14 +30,19 @@ const theme = createTheme({
     },
 });
 
+
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-      <BrowserRouter>
-          <CookiesProvider>
-              <ThemeProvider theme={theme}>
-                  <App />
-              </ThemeProvider>
-          </CookiesProvider>
-      </BrowserRouter>
+      <Provider store={store}>
+          <BrowserRouter>
+              <CookiesProvider>
+                  <ThemeProvider theme={theme}>
+                      <App />
+                  </ThemeProvider>
+              </CookiesProvider>
+          </BrowserRouter>
+      </Provider>
+
   </React.StrictMode>,
 )

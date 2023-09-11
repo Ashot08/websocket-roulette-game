@@ -101,6 +101,10 @@ export default (props) => {
         console.log(mustSpin, prizeNumber)
     }, [props.doRoll, props.prizeNumber]);
 
+    const onRoll = (e) => {
+        props.handleSpinClick();
+    }
+
     return (
         <>
             <Popup onClose={()=>setPopup({...popup, open: false})} data={popup.data} open={popup.open} />
@@ -132,7 +136,7 @@ export default (props) => {
                 />
             </div>
             <div className="rouletteButtonWrapper">
-                <button onClick={props.handleSpinClick}>Крутить</button>
+                <button disabled={mustSpin} onClick={onRoll}>Крутить</button>
             </div>
 
         </>
