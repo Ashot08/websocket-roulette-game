@@ -88,6 +88,7 @@ function App() {
                         }
                     ));
                     if(data.status === 'success') {
+                        console.log('JOIN')
                         props.socket.current.send(JSON.stringify({action: 'get_game_state', game_id: params.gameId}));
                     }
                     break;

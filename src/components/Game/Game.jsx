@@ -56,8 +56,8 @@ function Game (props) {
                                     <ul>
                                         <li>Игра: {game.id}</li>
                                         <li>Статус: {game.status}</li>
-                                        <li>Следующий ход: {game.players[game.turn].name}</li>
-                                        {game.result && <li>Результат: {game.players[game.result.turn].name} - {game.result.prize}</li> }
+                                        <li>Следующее вращение: {game.players[game.turn].name}</li>
+                                        {game.result && <li>Результат предыдущего: {game.players[game.result.turn].name} - {game.result.prize}</li> }
 
                                         <li>
                                             Игроки:

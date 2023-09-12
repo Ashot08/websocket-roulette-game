@@ -133,7 +133,7 @@ export default (props) => {
                                 content: <BasicCard style={{textAlign: 'center'}} name={<div style={{textAlign: 'center'}}>Ход  <strong>{props.game.players[turn].name}</strong></div>} id={`У ${props.game.players[turn].name} на предприятии ${data[prizeNumber].fullName}`} />,
                             }
                         ));
-                        dispatch(offRollAction());
+
                         setMustSpin(false);
                     }}
                 />
