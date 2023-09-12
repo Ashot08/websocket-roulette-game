@@ -1,6 +1,6 @@
 import './App.css';
 import StartPage from "./components/StartPage/StartPage.jsx";
-import {Route, Routes} from "react-router-dom";
+import {Route, Routes, useParams} from "react-router-dom";
 import Game from "./components/Game/Game.jsx";
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect, useRef} from "react";
@@ -25,6 +25,7 @@ function App() {
     const notification = useSelector(state => state.notification.notification);
     const popup = useSelector(state => state.popup.popup);
     const games = useSelector(state => state.games.games);
+    const params = useParams();
 
     useEffect(() => {
         if(player) connect();
@@ -86,6 +87,9 @@ function App() {
                             gameId: data.id
                         }
                     ));
+                    if(data.status === 'success') {
+                        props.socket.current.send(JSON.stringify({action: 'get_game_state', game_id: params.gameId}));
+                    }
                     break;
                 }
                 case 'onGetGameState': {

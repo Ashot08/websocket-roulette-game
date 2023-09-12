@@ -4,6 +4,9 @@ import './Roulette.css';
 import arrowImage from './img/arrow.svg';
 import Popup from "../Popup/Popup.jsx";
 import BasicCard from "../Card/BasicCard.jsx";
+import {hidePopupAction, showPopupAction} from "../../store/popupReducer.js";
+import {useDispatch} from "react-redux";
+import {offRollAction} from "../../store/gameReducer.js";
 
 const data = [
     {
@@ -27,7 +30,7 @@ const data = [
             fontSize: 16,
             textColor: '#fff'
         },
-        fullName: 'всё ок, вам бонус!'
+        fullName: 'всё ок, бонус!'
     },
     {
         option: 'Тяжелый',
@@ -93,12 +96,15 @@ const data = [
 export default (props) => {
     const [mustSpin, setMustSpin] = useState(false);
     const [prizeNumber, setPrizeNumber] = useState(0);
-    const [popup, setPopup] = useState({onClose: ()=>{}, data: {}, open: false});
+
+    const dispatch = useDispatch();
 
     useEffect(() => {
         setPrizeNumber(props.prizeNumber);
         setMustSpin(props.doRoll);
-        console.log(mustSpin, prizeNumber)
+        dispatch(hidePopupAction());
+
+        console.log(mustSpin, prizeNumber);
     }, [props.doRoll, props.prizeNumber]);
 
     const onRoll = (e) => {
@@ -107,7 +113,7 @@ export default (props) => {
 
     return (
         <>
-            <Popup onClose={()=>setPopup({...popup, open: false})} data={popup.data} open={popup.open} />
+            <BasicCard name={''} id={'Ходит ' + props.game.players[props.game.turn].name} />
 
             <div className="rouletteWrapper">
                 <Wheel
@@ -119,24 +125,22 @@ export default (props) => {
                     textDistance={55}
                     pointerProps={{src: arrowImage}}
                     onStopSpinning={() => {
-                        //alert(`На вашем предприятии ${data[prizeNumber].fullName}`)
-
-                        const turn = (props.game.turn === 0) ? ( props.game.players.length - 1 ) : ( props.game.turn - 1 );
+                        const turn = props.game.turn;
                         console.log(props.game, turn)
-                        setPopup({
-                            ...popup,
-                            open: true,
-                            data: {
+
+                        dispatch(showPopupAction({
                                 title: '',
                                 content: <BasicCard style={{textAlign: 'center'}} name={<div style={{textAlign: 'center'}}>Ход  <strong>{props.game.players[turn].name}</strong></div>} id={`У ${props.game.players[turn].name} на предприятии ${data[prizeNumber].fullName}`} />,
                             }
-                        })
+                        ));
+                        dispatch(offRollAction());
                         setMustSpin(false);
                     }}
                 />
             </div>
             <div className="rouletteButtonWrapper">
                 <button disabled={mustSpin} onClick={onRoll}>Крутить</button>
+                <button disabled={mustSpin} onClick={props.onNextPlayer}>Передать ход</button>
             </div>
 
         </>

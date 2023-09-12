@@ -1,0 +1,9 @@
+.game_state{
+    position: fixed;
+    width: 300px;
+    left: 0;
+    top:0;
+    height: 100vh;
+    padding: 80px 20px;
+    text-align: left;
+}

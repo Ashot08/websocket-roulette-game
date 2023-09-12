@@ -21,7 +21,7 @@ function StartPage (props) {
 
     const createGame = async (e) => {
         e.preventDefault();
-        props.socket.current.send(JSON.stringify({action: 'create_game', game: {status: 'created', players: [player], players_count: 3}}));
+        props.socket.current.send(JSON.stringify({action: 'create_game', game: {status: 'created', players: [player], players_count: 2}}));
     }
 
     const joinGame = async (e) => {

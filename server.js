@@ -194,14 +194,27 @@ wss.on('connection', function connection(ws) {
             case 'get_game_state': {
                 const gameId = data.game_id;
                 const gameState = games.get(gameId);
-                if(data.roll === true) {
+
+                if(data.nextTurn === true) {
                     if(gameState.turn < gameState.players.length - 1) {
                         gameState.turn++;
                     } else {
                         gameState.turn = 0;
                     }
+                }
+
+                if(data.roll === true) {
+                    const result = {
+                        turn: gameState.turn,
+                        prizeNumber: null,
+                        prize: null,
+                    }
                     gameState.doRoll = true;
-                    gameState.prizeNumber = Math.floor(Math.random() * rouletteData.length);
+                    //gameState.prizeNumber = Math.floor(Math.random() * rouletteData.length);
+                    gameState.prizeNumber = 3;
+                    result.prizeNumber = gameState.prizeNumber;
+                    result.prize = rouletteData[gameState.prizeNumber].fullName;
+                    gameState.result = result;
                 }
                 if(!gameState){
                     const message = {

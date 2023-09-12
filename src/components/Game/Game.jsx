@@ -8,7 +8,10 @@ import * as React from "react";
 import FaceIcon from '@mui/icons-material/Face';
 import Roulette from "../Roulette/Roulette.jsx";
 import Login from "../Login/Login.jsx";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import './game.css';
+import {hidePopupAction} from "../../store/popupReducer.js";
+
 
 function Game (props) {
     const params = useParams();
@@ -16,16 +19,15 @@ function Game (props) {
     const game = useSelector(state => state.game.game);
 
     useEffect(() => {
-        setTimeout(() => {
+        if(props.socket.current){
             props.socket.current.send(JSON.stringify({
                         action: 'get_game_state',
                         game_id: params.gameId,
                     }
                 )
             );
-        }, 50)
-
-    }, []);
+        }
+    }, [props.socket.current, params.gameId]);
 
 
     const joinGame = async (e) => {
@@ -36,6 +38,9 @@ function Game (props) {
     const onRoulettePressSpin = () => {
         props.socket.current.send(JSON.stringify({action: 'get_game_state', game_id: params.gameId, roll: true}));
     }
+    const onNextPlayer = () => {
+        props.socket.current.send(JSON.stringify({action: 'get_game_state', game_id: params.gameId, nextTurn: true}));
+    }
 
     return (
         <>
@@ -43,10 +48,27 @@ function Game (props) {
             <main>
                 <div className={'gameWrapper'}>
                     {
-                        ( game && player && game.players.find(p => p.id === player.id) )
+                        ( game && player && game.players.find(p => p.id == player.id) )
 
                             ?
                             <>
+                                <aside className={'game_state'}>
+                                    <ul>
+                                        <li>Игра: {game.id}</li>
+                                        <li>Статус: {game.status}</li>
+                                        <li>Следующий ход: {game.players[game.turn].name}</li>
+                                        {game.result && <li>Результат: {game.players[game.result.turn].name} - {game.result.prize}</li> }
+
+                                        <li>
+                                            Игроки:
+                                            <ul>
+                                                {game.players.map(p => <li key={'players' + p.id}>{p.name}</li>)}
+                                            </ul>
+
+                                        </li>
+                                    </ul>
+
+                                </aside>
 
                                 {(game.status === 'finished') && <BasicCard name={'Игра ' + game.id} id={'Завершена'} />}
                                 {(game.status === 'created')
@@ -79,11 +101,7 @@ function Game (props) {
                                 }
                                 {(game.status === 'in_process') &&
                                     <>
-                                        <div>
-                                            {player && <BasicCard name={''} id={'Ходит ' + game.players[game.turn].name} />}
-                                        </div>
-
-                                        <Roulette game={game} doRoll={game.doRoll ?? false} prizeNumber={game.prizeNumber ?? 0} handleSpinClick={onRoulettePressSpin} />
+                                        <Roulette game={game} onNextPlayer={onNextPlayer} doRoll={game.doRoll ?? false} prizeNumber={game.prizeNumber ?? 0} handleSpinClick={onRoulettePressSpin} />
                                     </>
                                 }
                             </>
