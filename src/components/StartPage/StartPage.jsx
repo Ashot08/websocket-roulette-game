@@ -1,5 +1,4 @@
-import {useEffect, useRef, useState} from 'react';
-import {useCookies} from "react-cookie";
+import {useState} from 'react';
 import Button from '@mui/material/Button';
 import {
     Divider, FormControl,
@@ -10,166 +9,29 @@ import {
     Select,
     TextField
 } from "@mui/material";
-import ButtonAppBar from "../ButtonAppBar/ButtonAppBar.jsx";
-import Notification from "../Notification/Notification.jsx";
+
 import BasicCard from "../Card/BasicCard.jsx";
-import Popup from "../Popup/Popup.jsx";
-import {useDispatch, useSelector} from "react-redux";
-import {logoutPlayerAction, setPlayerAction} from "../../store/playerReducer.js";
+import {useSelector} from "react-redux";
+import Login from "../Login/Login.jsx";
 
-function StartPage() {
-    const socket = useRef();
-    const [games, setGames] = useState([]);
-    const [connected, setConnected] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const [notification, setNotification] = useState({text: '', status: ''});
-    //const [player, setPlayer] = useState(null);
-    const [playerNameInput, setPlayerNameInput] = useState('');
+function StartPage (props) {
     const [gameIdInput, setGameIdInput] = useState('');
-    const [isOpenNotification, setIsOpenNotification] = useState(false);
-    const [popup, setPopup] = useState({onClose: ()=>{}, data: {}, open: false});
-    const [cookies, setCookie, removeCookie] = useCookies(['player_name', 'player_id']);
-
-    const dispatch = useDispatch();
     const player = useSelector(state => state.player.player);
 
-    useEffect(() =>  {
-        connect();
-        if(!player && cookies.player_id)
-            dispatch(setPlayerAction({
-                id: cookies.player_id,
-                name: cookies.player_name ?? 'Без имени',
-            }))
-    }, [])
-
-    function setPlayerData(data){
-        setCookie('player_name', data.name, {maxAge: 10000});
-        setCookie('player_id', data.id, {maxAge: 10000});
-        dispatch(setPlayerAction({ id: data.id, name: data.name ?? 'Без имени'}));
-    }
-
-    function removePlayerData(){
-        removeCookie('player_name');
-        removeCookie('player_id');
-        dispatch(logoutPlayerAction())
-    }
 
     const createGame = async (e) => {
         e.preventDefault();
-        socket.current.send(JSON.stringify({action: 'create_game', game: {status: 'created', players: [player], players_count: 3}}));
+        props.socket.current.send(JSON.stringify({action: 'create_game', game: {status: 'created', players: [player], players_count: 3}}));
     }
 
     const joinGame = async (e) => {
         e.preventDefault();
-        socket.current.send(JSON.stringify({action: 'join_player', game_id: gameIdInput, player: {...player}}));
+        props.socket.current.send(JSON.stringify({action: 'join_player', game_id: gameIdInput, player: {...player}}));
     }
 
-    function connect(){
-
-        setIsLoading(true)
-
-        //socket.current = new WebSocket("ws://80.90.189.247:3000/");
-        socket.current = new WebSocket("ws://localhost:3000/");
-
-        socket.current.onopen = function(e) {
-            setConnected(true);
-            setIsLoading(false);
-            setNotification({
-                text: `[open] Соединение установлено. Отправляем данные на сервер.`,
-                status: 'success'
-            });
-            setIsOpenNotification(true);
-        };
-
-        socket.current.onmessage = function message(event) {
-            const data = JSON.parse(event.data);
-            switch (data.action) {
-                case 'onGetGames': {
-                    console.log(data.data, "GAMES!")
-                    setGames(data.data);
-                    break;
-                }
-                case 'notification': {
-                    setNotification({
-                        text: data.text,
-                        status: 'error'
-                    });
-                    setIsOpenNotification(true);
-                    break;
-                }
-                case 'onGameCreated': {
-                    setPopup({
-                        ...popup,
-                        open: true,
-                        data: {
-                            title: data.text,
-                            content: '',
-                            gameId: data.id
-                        }
-                    })
-                    break;
-                }
-                case 'onJoinGame': {
-                    setPopup({
-                        ...popup,
-                        open: true,
-                        data: {
-                            title: data.text,
-                            content: '',
-                            gameId: data.id
-                        }
-                    })
-                    break;
-                }
-                default: {return;}
-            }
-        };
-        socket.current.onclose = function(event) {
-            if (event.wasClean) {
-                setNotification({
-                    text: `[close] Соединение закрыто чисто, код=${event.code} причина=${event.reason}`,
-                    status: 'success'
-                });
-                setIsOpenNotification(true);
-            } else {
-                setNotification({
-                    text: `[close] Соединение прервано`,
-                    status: 'error'
-                });
-                setIsOpenNotification(true);
-
-            }
-        };
-
-        socket.current.onerror = function(error) {
-            setNotification({
-                text: `[error]`,
-                status: 'error'
-            });
-            setIsOpenNotification(true);
-        };
-    }
 
     return (
         <>
-            <ButtonAppBar
-                buttonText={player ? 'Выйти' : 'Войти'}
-                buttonHandler={player ? removePlayerData : ()=>{} }
-                games={games}
-            />
-            <Notification
-                text={notification.text}
-                status={notification.status}
-                onClose={(event, reason) => {
-                    if (reason === 'clickaway') {
-                        return;
-                    }
-                    setIsOpenNotification(false)
-                }}
-                isOpen={isOpenNotification}
-            />
-
-            <Popup onClose={()=>setPopup({...popup, open: false})} data={popup.data} open={popup.open} />
 
             <main>
 
@@ -179,28 +41,7 @@ function StartPage() {
 
                     {!player
                         ?
-                        <form onSubmit={
-                            (e) => {
-                                e.preventDefault();
-                                setPlayerData({id: Math.random(), name: playerNameInput})
-                            }
-                        }>
-
-                            <TextField
-                                sx={{width: '100%'}}
-                                required={true}
-                                onInput={(e) => setPlayerNameInput(e.target.value)}
-                                id="name-input"
-                                label="Ваше имя"
-                                variant="outlined"
-                                type="text"
-                                name={'name'}
-                                value={playerNameInput}
-                            />
-                            <br/>
-                            <br/>
-                            <Button sx={{ width: '100%' }} type="submit" variant="contained">Войти</Button>
-                        </form>
+                        <Login />
                         :
 
                         <div>
@@ -209,14 +50,13 @@ function StartPage() {
                                     <div>
                                         <TextField
                                             sx={{width: '100%'}}
-                                            onInput={(e) => setPlayerNameInput(e.target.value)}
                                             id="name-input"
                                             label="Добро пожаловать"
                                             variant="outlined"
                                             type="text"
                                             name={'name'}
                                             placeholder={'Добро пожаловать'}
-                                            value={playerNameInput}
+                                            value={player.name}
                                             disabled={true}
                                         />
                                         <FormControl sx={{my: 2}} fullWidth>

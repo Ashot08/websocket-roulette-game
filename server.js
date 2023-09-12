@@ -240,7 +240,7 @@ wss.on('connection', function connection(ws) {
         }
     });
 
-    ws.send(JSON.stringify(games));
+    //ws.send(JSON.stringify(games));
 });
 
 function broadcastMessage(message, id = 0) {

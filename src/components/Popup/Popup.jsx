@@ -27,22 +27,22 @@ export default function Popup (props) {
 
     return (
         <Dialog onClose={handleClose} open={open}>
-            <DialogTitle sx={{textAlign: 'center'}}>{data.title}</DialogTitle>
+            <DialogTitle sx={{textAlign: 'center'}}>{data?.title}</DialogTitle>
             <List sx={{ pt: 0 }}>
 
-                {data.content}
+                {data?.content}
 
-                {data.gameId
+                {data?.gameId
                     ?
                     <>
                         <ListItem sx={{p: 2, justifyContent: 'center'}} disableGutters>
-                            <div>Идентификатор игры: <Chip variant="outlined" label={data.gameId} /></div>
+                            <div>Идентификатор игры: <Chip variant="outlined" label={data?.gameId} /></div>
                         </ListItem>
 
 
                         <ListItem sx={{p: 2, justifyContent: 'center'}} disableGutters>
                             <div>
-                                <QRCode value={document.location.origin  + '/game/' + data.gameId} />
+                                <QRCode value={document.location.origin  + '/game/' + data?.gameId} />
                             </div>
                         </ListItem>
                         <ListItem disableGutters>
