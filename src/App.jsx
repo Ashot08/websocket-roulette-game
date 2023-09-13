@@ -17,6 +17,7 @@ import {ListItem} from "@mui/material";
 import ListItemButton from "@mui/material/ListItemButton";
 import * as React from "react";
 import {setGameAction} from "./store/gameReducer.js";
+import {connectAction, disconnectAction} from "./store/websocketReducer.js";
 
 function App() {
     const socket = useRef();
@@ -25,7 +26,6 @@ function App() {
     const notification = useSelector(state => state.notification.notification);
     const popup = useSelector(state => state.popup.popup);
     const games = useSelector(state => state.games.games);
-    const params = useParams();
 
     useEffect(() => {
         if(player) connect();
@@ -55,6 +55,7 @@ function App() {
                 text: `[open] Соединение установлено. Отправляем данные на сервер.`,
                 status: 'success'
             }));
+            dispatch(connectAction());
         };
 
         socket.current.onmessage = function message(event) {
@@ -89,7 +90,7 @@ function App() {
                     ));
                     if(data.status === 'success') {
                         console.log('JOIN')
-                        props.socket.current.send(JSON.stringify({action: 'get_game_state', game_id: params.gameId}));
+                        socket.current.send(JSON.stringify({action: 'get_game_state', game_id: data.id}));
                     }
                     break;
                 }
@@ -113,6 +114,7 @@ function App() {
                     if(data.status === 'success') {
                         dispatch(setGameAction({
                             ...data.state,
+                            doRoll: data.doRoll,
                         }))
                     }
 
@@ -135,6 +137,7 @@ function App() {
                 }));
 
             }
+            dispatch(disconnectAction());
         };
 
         socket.current.onerror = function(error) {
@@ -166,12 +169,13 @@ function App() {
 
             <Popup onClose={()=>dispatch(hidePopupAction())} data={popup} open={!!popup} />
 
+
+
             <Routes>
                 <Route path='/' element={<StartPage socket={socket} />}/>
                 <Route path='/game/:gameId?' element={<Game socket={socket} />} action={({params}) => {
                 }}/>
             </Routes>
-
         </>
     )
 }

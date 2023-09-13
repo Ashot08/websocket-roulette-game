@@ -17,11 +17,11 @@ import Login from "../Login/Login.jsx";
 function StartPage (props) {
     const [gameIdInput, setGameIdInput] = useState('');
     const player = useSelector(state => state.player.player);
-
+    const [playersCount, setPlayersCount] = useState(3);
 
     const createGame = async (e) => {
         e.preventDefault();
-        props.socket.current.send(JSON.stringify({action: 'create_game', game: {status: 'created', players: [player], players_count: 2}}));
+        props.socket.current.send(JSON.stringify({action: 'create_game', game: {status: 'created', players: [player], players_count: playersCount}}));
     }
 
     const joinGame = async (e) => {
@@ -64,9 +64,9 @@ function StartPage (props) {
                                             <Select
                                                 labelId="demo-simple-select-label"
                                                 id="demo-simple-select"
-                                                value={3}
+                                                value={playersCount}
                                                 label="Количество игроков"
-                                                onChange={()=>{}}
+                                                onChange={(e)=>{setPlayersCount(e.target.value)}}
                                             >
                                                 <MenuItem value={2}>2</MenuItem>
                                                 <MenuItem value={3}>3</MenuItem>

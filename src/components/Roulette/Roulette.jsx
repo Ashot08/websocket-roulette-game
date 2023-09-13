@@ -5,7 +5,7 @@ import arrowImage from './img/arrow.svg';
 import Popup from "../Popup/Popup.jsx";
 import BasicCard from "../Card/BasicCard.jsx";
 import {hidePopupAction, showPopupAction} from "../../store/popupReducer.js";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {offRollAction} from "../../store/gameReducer.js";
 
 const data = [
@@ -96,15 +96,12 @@ const data = [
 export default (props) => {
     const [mustSpin, setMustSpin] = useState(false);
     const [prizeNumber, setPrizeNumber] = useState(0);
-
     const dispatch = useDispatch();
 
     useEffect(() => {
         setPrizeNumber(props.prizeNumber);
         setMustSpin(props.doRoll);
         dispatch(hidePopupAction());
-
-        console.log(mustSpin, prizeNumber);
     }, [props.doRoll, props.prizeNumber]);
 
     const onRoll = (e) => {
@@ -126,14 +123,11 @@ export default (props) => {
                     pointerProps={{src: arrowImage}}
                     onStopSpinning={() => {
                         const turn = props.game.turn;
-                        console.log(props.game, turn)
-
                         dispatch(showPopupAction({
                                 title: '',
                                 content: <BasicCard style={{textAlign: 'center'}} name={<div style={{textAlign: 'center'}}>Ход  <strong>{props.game.players[turn].name}</strong></div>} id={`У ${props.game.players[turn].name} на предприятии ${data[prizeNumber].fullName}`} />,
                             }
                         ));
-
                         setMustSpin(false);
                     }}
                 />

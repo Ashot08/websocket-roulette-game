@@ -17,16 +17,20 @@ function Game (props) {
     const params = useParams();
     const player = useSelector(state => state.player.player);
     const game = useSelector(state => state.game.game);
+    const isWebsocketConnect = useSelector(state => state.websocket.websocket.isConnect);
 
     useEffect(() => {
-        if(props.socket.current){
-            props.socket.current.send(JSON.stringify({
-                        action: 'get_game_state',
-                        game_id: params.gameId,
-                    }
-                )
-            );
-        }
+        setTimeout(() => {
+            if(isWebsocketConnect && props.socket.current){
+                props.socket.current.send(JSON.stringify({
+                            action: 'get_game_state',
+                            game_id: params.gameId,
+                        }
+                    )
+                );
+            }
+        }, 1)
+
     }, [props.socket.current, params.gameId]);
 
 
@@ -54,6 +58,7 @@ function Game (props) {
                             <>
                                 <aside className={'game_state'}>
                                     <ul>
+                                        <li>Игрок: {player.name}</li>
                                         <li>Игра: {game.id}</li>
                                         <li>Статус: {game.status}</li>
                                         <li>Следующее вращение: {game.players[game.turn].name}</li>

@@ -5,6 +5,7 @@ import {notificationReducer} from "./notificationReducer.js";
 import {gamesReducer} from "./gamesReducer.js";
 import {popupReducer} from "./popupReducer.js";
 import {gameReducer} from "./gameReducer.js";
+import {websocketReducer} from "./websocketReducer.js";
 
 const reducer = combineReducers({
     player: playerReducer,
@@ -12,5 +13,6 @@ const reducer = combineReducers({
     games: gamesReducer,
     popup: popupReducer,
     game: gameReducer,
+    websocket: websocketReducer,
 });
 export const store = createStore(reducer, applyMiddleware(thunk));

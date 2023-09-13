@@ -156,7 +156,7 @@ wss.on('connection', function connection(ws) {
                     ws.send(JSON.stringify(message));
                     break;
                 }
-                if(game.players.find(p => p.id === data.player.id)){
+                if(game.players.find(p => p.id == data.player.id)){
                     const message = {
                         type: 'message',
                         action: 'notification',
@@ -194,6 +194,8 @@ wss.on('connection', function connection(ws) {
             case 'get_game_state': {
                 const gameId = data.game_id;
                 const gameState = games.get(gameId);
+                let doRoll = false;
+
 
                 if(data.nextTurn === true) {
                     if(gameState.turn < gameState.players.length - 1) {
@@ -209,9 +211,9 @@ wss.on('connection', function connection(ws) {
                         prizeNumber: null,
                         prize: null,
                     }
-                    gameState.doRoll = true;
-                    //gameState.prizeNumber = Math.floor(Math.random() * rouletteData.length);
-                    gameState.prizeNumber = 3;
+                    doRoll = true;
+                    gameState.prizeNumber = Math.floor(Math.random() * rouletteData.length);
+                    //gameState.prizeNumber = 3;
                     result.prizeNumber = gameState.prizeNumber;
                     result.prize = rouletteData[gameState.prizeNumber].fullName;
                     gameState.result = result;
@@ -234,6 +236,7 @@ wss.on('connection', function connection(ws) {
                     state: {
                         ...gameState,
                     },
+                    doRoll,
                     id: gameId,
                 }
                 broadcastMessage(message);
