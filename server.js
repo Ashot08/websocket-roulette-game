@@ -195,7 +195,7 @@ wss.on('connection', function connection(ws) {
                 const gameId = data.game_id;
                 const gameState = games.get(gameId);
                 let doRoll = false;
-
+                let nextTurn = false;
 
                 if(data.nextTurn === true) {
                     if(gameState.turn < gameState.players.length - 1) {
@@ -203,6 +203,7 @@ wss.on('connection', function connection(ws) {
                     } else {
                         gameState.turn = 0;
                     }
+                    nextTurn = true;
                 }
 
                 if(data.roll === true) {
@@ -237,6 +238,7 @@ wss.on('connection', function connection(ws) {
                         ...gameState,
                     },
                     doRoll,
+                    nextTurn,
                     id: gameId,
                 }
                 broadcastMessage(message);

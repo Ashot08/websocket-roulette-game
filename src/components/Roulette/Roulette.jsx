@@ -101,8 +101,10 @@ export default (props) => {
     useEffect(() => {
         setPrizeNumber(props.prizeNumber);
         setMustSpin(props.doRoll);
-        dispatch(hidePopupAction());
-    }, [props.doRoll, props.prizeNumber]);
+        if(props.doRoll || props.game.nextTurn) {
+            dispatch(hidePopupAction());
+        }
+    }, [props.doRoll, props.prizeNumber, props.game.nextTurn]);
 
     const onRoll = (e) => {
         props.handleSpinClick();
@@ -129,6 +131,7 @@ export default (props) => {
                             }
                         ));
                         setMustSpin(false);
+                        dispatch(offRollAction());
                     }}
                 />
             </div>

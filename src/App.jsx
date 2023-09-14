@@ -115,6 +115,7 @@ function App() {
                         dispatch(setGameAction({
                             ...data.state,
                             doRoll: data.doRoll,
+                            nextTurn: data.nextTurn,
                         }))
                     }
 
