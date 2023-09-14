@@ -1,9 +1,87 @@
+.gameWrapper{
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    padding: 0;
+    max-width: 1280px;
+    margin: 0 auto;
+}
 .game_state{
-    position: fixed;
     width: 300px;
-    left: 0;
-    top:0;
     height: 100vh;
     padding: 80px 20px;
     text-align: left;
+    border-right: 1px solid rgba(0,0,0,0.1);
+    background-color: #fff;
+    min-width: 300px;
+}
+.game_desk {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 60px;
+}
+
+.button {
+    --bg: #e74c3c;
+    --text-color: #fff;
+    position: relative;
+    width: 150px;
+    border: none;
+    background: var(--bg);
+    color: var(--text-color);
+    padding: 1em;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: 0.2s;
+    border-radius: 5px;
+    opacity: 0.8;
+    letter-spacing: 1px;
+    box-shadow: #c0392b 0px 7px 2px, #000 0px 8px 5px;
+}
+
+.button:hover {
+    opacity: 1;
+}
+
+.button:active {
+    top: 4px;
+    box-shadow: #c0392b 0px 3px 2px,#000 0px 3px 5px;
+}
+.game_state > ul{
+    order: 2;
+    list-style: none;
+    margin-left: 0;
+    padding-left: 0;
+}
+.game_state > ul > li{
+    border: 1px solid rgba(0,0,0,0.1);
+    border-bottom: none;
+    padding: 4px 8px;
+}
+.game_state > ul > li:last-child{
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+@media(max-width: 768px){
+    .gameWrapper{
+        flex-wrap: wrap;
+    }
+    .game_state{
+        width: 100%;
+        order: 2;
+        display: grid;
+        height: 100%;
+        align-items: flex-start;
+        padding: 20px;
+    }
+    .game_state > ul{
+        order: 2;
+    }
+    .game_desk{
+        overflow: hidden;
+        justify-content: flex-end;
+    }
 }

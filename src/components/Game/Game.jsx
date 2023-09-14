@@ -11,9 +11,11 @@ import Login from "../Login/Login.jsx";
 import {useDispatch, useSelector} from "react-redux";
 import './game.css';
 import {hidePopupAction} from "../../store/popupReducer.js";
+import {Quiz} from "../Quiz/Quiz.jsx";
 
 
 function Game (props) {
+    const dispatch = useDispatch();
     const params = useParams();
     const player = useSelector(state => state.player.player);
     const game = useSelector(state => state.game.game);
@@ -45,6 +47,12 @@ function Game (props) {
     const onNextPlayer = () => {
         props.socket.current.send(JSON.stringify({action: 'get_game_state', game_id: params.gameId, nextTurn: true}));
     }
+    const onGetQuestion = () => {
+        props.socket.current.send(JSON.stringify({action: 'get_game_state', game_id: params.gameId, getQuestion: true, questionNumber: Math.floor(Math.random() * 6)}));
+    }
+    const onHideQuestion = () => {
+        props.socket.current.send(JSON.stringify({action: 'get_game_state', game_id: params.gameId, getQuestion: false}));
+    }
 
     return (
         <>
@@ -58,21 +66,33 @@ function Game (props) {
                             <>
                                 <aside className={'game_state'}>
                                     <ul>
-                                        <li>Игрок: {player.name}</li>
-                                        <li>Игра: {game.id}</li>
-                                        <li>Статус: {game.status}</li>
-                                        <li>Следующее вращение: {game.players[game.turn].name}</li>
-                                        {game.result && <li>Результат предыдущего: {game.players[game.result.turn].name} - {game.result.prize}</li> }
+                                        <li><strong>Игрок:</strong> {player.name}</li>
+                                        <li><strong>Игра:</strong> {game.id}</li>
+                                        {/*<li><strong>Статус:</strong> {game.status}</li>*/}
+                                        <li><strong>Следующее вращение:</strong> {game.players[game.turn].name}</li>
+                                        {game.result && <li><strong>Результат предыдущего:</strong> {game.players[game.result.turn].name} - {game.result.prize}</li> }
 
                                         <li>
-                                            Игроки:
+                                            <strong>Игроки:</strong>
                                             <ul>
                                                 {game.players.map(p => <li key={'players' + p.id}>{p.name}</li>)}
                                             </ul>
 
                                         </li>
                                     </ul>
-
+                                    {
+                                        game.players[game.turn].name == player.name
+                                        &&
+                                        <div>
+                                            {
+                                                game.question.show
+                                                ?
+                                                    <button onClick={onHideQuestion} className={'button'}>Перейти к рулетке</button>
+                                                :
+                                                    <button onClick={onGetQuestion} className={'button'}>Взять вопрос</button>
+                                            }
+                                        </div>
+                                    }
                                 </aside>
 
                                 {(game.status === 'finished') && <BasicCard name={'Игра ' + game.id} id={'Завершена'} />}
@@ -106,7 +126,18 @@ function Game (props) {
                                 }
                                 {(game.status === 'in_process') &&
                                     <>
-                                        <Roulette game={game} onNextPlayer={onNextPlayer} doRoll={game.doRoll ?? false} prizeNumber={game.prizeNumber ?? 0} handleSpinClick={onRoulettePressSpin} />
+                                        <div className={'game_desk'}>
+                                            {
+                                                game.question.show
+                                                    ?
+                                                    <Quiz isMyTurn={game.players[game.turn].name == player.name} onGetQuestion={onGetQuestion} />
+                                                    :
+                                                    <div>
+                                                        <Roulette game={game} onNextPlayer={onNextPlayer} doRoll={game.doRoll ?? false} prizeNumber={game.prizeNumber ?? 0} handleSpinClick={onRoulettePressSpin} />
+                                                    </div>
+                                            }
+                                        </div>
+
                                     </>
                                 }
                             </>

@@ -197,6 +197,19 @@ wss.on('connection', function connection(ws) {
                 let doRoll = false;
                 let nextTurn = false;
 
+                if(typeof gameState === 'object' && !gameState.question) {
+                    gameState.question = {
+                        show: false,
+                        question: 1
+                    }
+                }
+                if(data.getQuestion === true) {
+                    gameState.question.show = true;
+                    gameState.question.question = data.questionNumber ?? 1;
+                } else if(data.getQuestion === false) {
+                    gameState.question.show = false;
+                }
+
                 if(data.nextTurn === true) {
                     if(gameState.turn < gameState.players.length - 1) {
                         gameState.turn++;

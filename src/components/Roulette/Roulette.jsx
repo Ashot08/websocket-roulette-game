@@ -7,6 +7,9 @@ import BasicCard from "../Card/BasicCard.jsx";
 import {hidePopupAction, showPopupAction} from "../../store/popupReducer.js";
 import {useDispatch, useSelector} from "react-redux";
 import {offRollAction} from "../../store/gameReducer.js";
+import {Quiz} from "../Quiz/Quiz.jsx";
+import {ButtonGroup} from "@mui/material";
+import Button from "@mui/material/Button";
 
 const data = [
     {
@@ -122,12 +125,18 @@ export default (props) => {
                     innerRadius={8}
                     radiusLineWidth={1}
                     textDistance={55}
+                    spinDuration={0.1}
                     pointerProps={{src: arrowImage}}
                     onStopSpinning={() => {
                         const turn = props.game.turn;
                         dispatch(showPopupAction({
                                 title: '',
-                                content: <BasicCard style={{textAlign: 'center'}} name={<div style={{textAlign: 'center'}}>Ход  <strong>{props.game.players[turn].name}</strong></div>} id={`У ${props.game.players[turn].name} на предприятии ${data[prizeNumber].fullName}`} />,
+                                content: <BasicCard
+                                    style={{textAlign: 'center'}}
+                                    name={<div style={{textAlign: 'center'}}>
+                                        Ход  <strong>{props.game.players[turn].name}</strong>
+                                    </div>}
+                                    id={`У ${props.game.players[turn].name} на предприятии ${data[prizeNumber].fullName}`} />,
                             }
                         ));
                         setMustSpin(false);
@@ -136,9 +145,15 @@ export default (props) => {
                 />
             </div>
             <div className="rouletteButtonWrapper">
-                <button disabled={mustSpin} onClick={onRoll}>Крутить</button>
-                <button disabled={mustSpin} onClick={props.onNextPlayer}>Передать ход</button>
+
+                <ButtonGroup className={'rouletteButtons'} variant="contained" aria-label="outlined primary button group">
+                    <Button disabled={mustSpin} onClick={onRoll}>Крутить</Button>
+                    <Button disabled={mustSpin} onClick={props.onNextPlayer}>Передать ход</Button>
+                </ButtonGroup>
+
             </div>
+
+
 
         </>
     )
