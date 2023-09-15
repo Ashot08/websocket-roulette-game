@@ -15,9 +15,10 @@
         position: fixed !important;
         bottom: 118px;
         right: 24px;
-        z-index: 2;
+        z-index: 999;
+        top: inherit !important;
     }
     .button:active{
-        top: inherit;
+        top: inherit !important;
     }
 }

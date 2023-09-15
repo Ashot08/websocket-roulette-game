@@ -64,7 +64,7 @@ function Game (props) {
 
                             ?
                             <>
-                                <aside className={'game_state'}>
+                                {(game.status === 'in_process') && <aside className={'game_state'}>
                                     <ul>
                                         <li><strong>Игрок:</strong> {player.name}</li>
                                         <li><strong>Игра:</strong> {game.id}</li>
@@ -93,36 +93,38 @@ function Game (props) {
                                             }
                                         </div>
                                     }
-                                </aside>
+                                </aside>}
 
                                 {(game.status === 'finished') && <BasicCard name={'Игра ' + game.id} id={'Завершена'} />}
                                 {(game.status === 'created')
                                     &&
-                                    <>
+                                    <div className={'game_desk game_desk_centered'}>
                                         <div>
-                                            {player && <BasicCard name={''} id={game.players[game.turn].name} />}
+                                            <div>
+                                                {player && <BasicCard name={''} id={game.players[game.turn].name} />}
+                                            </div>
+                                            <BasicCard
+                                                name={'Игра ' + game.id}
+                                                id={`Ожидает, когда наберется ${game.players_count} игроков (сейчас ${game.players.length} из ${game.players_count})`}
+                                                content={
+                                                    <List>{
+                                                        (game.players.map((p) => {
+                                                            return(
+                                                                <ListItem key={p.id} disablePadding>
+                                                                    <ListItemButton>
+                                                                        <ListItemIcon>
+                                                                            <FaceIcon/>
+                                                                        </ListItemIcon>
+                                                                        <ListItemText primary={p.name}/>
+                                                                    </ListItemButton>
+                                                                </ListItem>
+                                                            )
+                                                        }))}
+                                                    </List>
+                                                }
+                                            />
                                         </div>
-                                        <BasicCard
-                                            name={'Игра ' + game.id}
-                                            id={`Ожидает, когда наберется ${game.players_count} игроков (сейчас ${game.players.length} из ${game.players_count})`}
-                                            content={
-                                                <List>{
-                                                    (game.players.map((p) => {
-                                                        return(
-                                                            <ListItem key={p.id} disablePadding>
-                                                                <ListItemButton>
-                                                                    <ListItemIcon>
-                                                                        <FaceIcon/>
-                                                                    </ListItemIcon>
-                                                                    <ListItemText primary={p.name}/>
-                                                                </ListItemButton>
-                                                            </ListItem>
-                                                        )
-                                                    }))}
-                                                </List>
-                                            }
-                                        />
-                                    </>
+                                    </div>
                                 }
                                 {(game.status === 'in_process') &&
                                     <>
@@ -143,49 +145,52 @@ function Game (props) {
                             </>
 
                             :
-                            <>
-                                <>
-                                    <h1>ИГРА {params.gameId}</h1>
-                                    {player && <BasicCard name={player.name} id={'id: ' + player.id} />}
-                                </>
+                            <div className={'game_desk game_desk_centered'}>
+                                <div>
+                                    <>
+                                        <h1>ИГРА {params.gameId}</h1>
+                                        {player && <BasicCard name={player.name} id={'id: ' + player.id} />}
+                                    </>
 
-                                {(!player)
-                                    ?
+                                    {(!player)
+                                        ?
+                                        <div >
+                                            <Login />
+                                        </div>
 
-                                    <Login />
+                                        :
 
-                                    :
+                                        <div>
+                                            <List component="nav" aria-label="mailbox folders">
+                                                <ListItem sx={{justifyContent: 'center'}} divider>
+                                                    <div>
+                                                        <h4>Присоединиться к игре</h4>
+                                                        <form onSubmit={joinGame} action="">
 
-                                    <div>
-                                        <List component="nav" aria-label="mailbox folders">
-                                            <ListItem sx={{justifyContent: 'center'}} divider>
-                                                <div>
-                                                    <h4>Присоединиться к игре</h4>
-                                                    <form onSubmit={joinGame} action="">
+                                                            <div>
+                                                                <label htmlFor="">
+                                                                    <TextField
+                                                                        required={true}
+                                                                        id={'name-input'}
+                                                                        label={'Id игры'}
+                                                                        variant={'outlined'}
+                                                                        type={'text'}
+                                                                        name={'game_id'}
+                                                                        value={params.gameId}
+                                                                        disabled={true}
+                                                                    />
+                                                                </label>
+                                                            </div>
+                                                            <Button sx={{my: 2, width: '100%'}} type="submit"
+                                                                    variant="contained">Присоединиться</Button>
+                                                        </form>
+                                                    </div>
+                                                </ListItem>
+                                            </List>
 
-                                                        <div>
-                                                            <label htmlFor="">
-                                                                <TextField
-                                                                    required={true}
-                                                                    id={'name-input'}
-                                                                    label={'Id игры'}
-                                                                    variant={'outlined'}
-                                                                    type={'text'}
-                                                                    name={'game_id'}
-                                                                    value={params.gameId}
-                                                                    disabled={true}
-                                                                />
-                                                            </label>
-                                                        </div>
-                                                        <Button sx={{my: 2, width: '100%'}} type="submit"
-                                                                variant="contained">Присоединиться</Button>
-                                                    </form>
-                                                </div>
-                                            </ListItem>
-                                        </List>
-
-                                    </div>}
-                            </>
+                                        </div>}
+                                </div>
+                            </div>
                     }
 
                 </div>

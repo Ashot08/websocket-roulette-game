@@ -84,4 +84,7 @@
         overflow: hidden;
         justify-content: flex-end;
     }
+    .game_desk_centered{
+        justify-content: center;
+    }
 }

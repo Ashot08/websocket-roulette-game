@@ -35,7 +35,7 @@ function StartPage (props) {
 
             <main>
 
-                <div>
+                <div className={'page_wrapper'}>
 
                     {player && <BasicCard name={player.name} id={player.id} />}
 
