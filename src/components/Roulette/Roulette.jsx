@@ -10,6 +10,7 @@ import {offRollAction} from "../../store/gameReducer.js";
 import {Quiz} from "../Quiz/Quiz.jsx";
 import {ButtonGroup} from "@mui/material";
 import Button from "@mui/material/Button";
+import sound from './audio/volchok_sound.mp3';
 
 const data = [
     {
@@ -110,8 +111,14 @@ export default (props) => {
     }, [props.doRoll, props.prizeNumber, props.game.nextTurn]);
 
     const onRoll = (e) => {
+        play();
         props.handleSpinClick();
     }
+    let audio = document.querySelector("#chatAudio");
+    function play() {
+        audio.play()
+    }
+
 
     return (
         <>
@@ -125,7 +132,7 @@ export default (props) => {
                     innerRadius={8}
                     radiusLineWidth={1}
                     textDistance={55}
-                    spinDuration={0.1}
+                    spinDuration={1}
                     pointerProps={{src: arrowImage}}
                     onStopSpinning={() => {
                         const turn = props.game.turn;
@@ -146,6 +153,9 @@ export default (props) => {
             </div>
             <div className="rouletteButtonWrapper">
 
+                <audio id="chatAudio">
+                    <source src={sound} type="audio/mpeg"></source>
+                </audio>
                 <ButtonGroup className={'rouletteButtons'} variant="contained" aria-label="outlined primary button group">
                     <Button disabled={mustSpin} onClick={onRoll}>Крутить</Button>
                     <Button disabled={mustSpin} onClick={props.onNextPlayer}>Передать ход</Button>
