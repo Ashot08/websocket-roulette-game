@@ -101,6 +101,8 @@ export default (props) => {
     const [mustSpin, setMustSpin] = useState(false);
     const [prizeNumber, setPrizeNumber] = useState(0);
     const dispatch = useDispatch();
+    const player = useSelector(state => state.player.player);
+    const game = useSelector(state => state.game.game);
 
     useEffect(() => {
         setPrizeNumber(props.prizeNumber);
@@ -111,13 +113,13 @@ export default (props) => {
     }, [props.doRoll, props.prizeNumber, props.game.nextTurn]);
 
     const onRoll = (e) => {
-        play();
+        //play();
         props.handleSpinClick();
     }
-    let audio = document.querySelector("#chatAudio");
-    function play() {
-        audio.play()
-    }
+    // let audio = document.querySelector("#chatAudio");
+    // function play() {
+    //     audio.play()
+    // }
 
 
     return (
@@ -132,7 +134,7 @@ export default (props) => {
                     innerRadius={8}
                     radiusLineWidth={1}
                     textDistance={55}
-                    spinDuration={1}
+                    spinDuration={1.25}
                     pointerProps={{src: arrowImage}}
                     onStopSpinning={() => {
                         const turn = props.game.turn;
@@ -153,13 +155,19 @@ export default (props) => {
             </div>
             <div className="rouletteButtonWrapper">
 
-                <audio id="chatAudio">
-                    <source src={sound} type="audio/mpeg"></source>
-                </audio>
-                <ButtonGroup className={'rouletteButtons'} variant="contained" aria-label="outlined primary button group">
-                    <Button disabled={mustSpin} onClick={onRoll}>Крутить</Button>
-                    <Button disabled={mustSpin} onClick={props.onNextPlayer}>Передать ход</Button>
-                </ButtonGroup>
+                {/*<audio id="chatAudio">*/}
+                {/*    <source src={sound} type="audio/mpeg"></source>*/}
+                {/*</audio>*/}
+
+                {
+                    ( game.players[game.turn].id == player.id || game.moderator.id == player.id )
+                    &&
+                    <ButtonGroup className={'rouletteButtons'} variant="contained" aria-label="outlined primary button group">
+                        <Button disabled={mustSpin} onClick={onRoll}>Крутить</Button>
+                        <Button disabled={mustSpin} onClick={props.onNextPlayer}>Передать ход</Button>
+                    </ButtonGroup>
+                }
+
 
             </div>
 

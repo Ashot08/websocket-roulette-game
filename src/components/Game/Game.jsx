@@ -60,12 +60,16 @@ function Game (props) {
             <main>
                 <div className={'gameWrapper'}>
                     {
-                        ( game && player && game.players.find(p => p.id == player.id) )
-
+                        (
+                            game &&
+                            player &&
+                            (game.players.find(p => p.id == player.id || game.moderator.id == player.id) )
+                        )
                             ?
                             <>
                                 {(game.status === 'in_process') && <aside className={'game_state'}>
                                     <ul>
+                                        {game.moderator.id == player.id && <li><strong>Режим модератора:</strong> ON</li>}
                                         <li><strong>Игрок:</strong> {player.name}</li>
                                         <li><strong>Игра:</strong> {game.id}</li>
                                         {/*<li><strong>Статус:</strong> {game.status}</li>*/}
@@ -81,7 +85,7 @@ function Game (props) {
                                         </li>
                                     </ul>
                                     {
-                                        game.players[game.turn].name == player.name
+                                        ( game.players[game.turn].id == player.id || game.moderator.id == player.id )
                                         &&
                                         <div>
                                             {

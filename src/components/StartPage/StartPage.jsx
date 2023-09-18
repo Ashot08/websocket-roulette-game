@@ -1,7 +1,8 @@
 import {useState} from 'react';
 import Button from '@mui/material/Button';
 import {
-    Divider, FormControl,
+    Checkbox,
+    Divider, FormControl, FormControlLabel,
     InputLabel,
     List,
     ListItem,
@@ -18,10 +19,32 @@ function StartPage (props) {
     const [gameIdInput, setGameIdInput] = useState('');
     const player = useSelector(state => state.player.player);
     const [playersCount, setPlayersCount] = useState(3);
+    const [moderatorMode, setModeratorMode] = useState(false);
 
     const createGame = async (e) => {
         e.preventDefault();
-        props.socket.current.send(JSON.stringify({action: 'create_game', game: {status: 'created', players: [player], players_count: playersCount}}));
+        if(moderatorMode) {
+            props.socket.current.send(JSON.stringify({
+                action: 'create_game',
+                game: {
+                    status: 'created',
+                    players: [],
+                    players_count: playersCount,
+                    moderator: player,
+                }
+            }));
+        } else {
+            props.socket.current.send(JSON.stringify({
+                action: 'create_game',
+                game: {
+                    status: 'created',
+                    players: [player],
+                    players_count: playersCount,
+                    moderator: player,
+                }
+            }));
+        }
+
     }
 
     const joinGame = async (e) => {
@@ -74,6 +97,7 @@ function StartPage (props) {
                                                 <MenuItem value={5}>5</MenuItem>
                                                 <MenuItem value={6}>6</MenuItem>
                                             </Select>
+                                            <FormControlLabel onChange={() => setModeratorMode(!moderatorMode)} control={<Checkbox checked={moderatorMode} />} label="Модератор" />
                                         </FormControl>
                                         <form onSubmit={createGame} action="">
                                             <Button sx={{ my: 2, width: '100%', textAlign: 'center' }} type="submit" variant="contained">Новая игра</Button>

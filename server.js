@@ -93,7 +93,7 @@ const rouletteData = [
         fullName: 'Микротравма'
     },
 ]
-const players =
+//const players =
 
 wss.on('connection', function connection(ws) {
     ws.on('error', console.error);

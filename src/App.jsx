@@ -46,7 +46,6 @@ function App() {
     }, []);
 
     function connect(){
-
         //socket.current = new WebSocket("ws://80.90.189.247:3000/");
         socket.current = new WebSocket("ws://localhost:3000/");
 
@@ -82,12 +81,6 @@ function App() {
                     break;
                 }
                 case 'onJoinGame': {
-                    dispatch(showPopupAction({
-                            title: data.text,
-                            content: '',
-                            gameId: data.id
-                        }
-                    ));
                     if(data.status === 'success') {
                         console.log('JOIN')
                         socket.current.send(JSON.stringify({action: 'get_game_state', game_id: data.id}));
