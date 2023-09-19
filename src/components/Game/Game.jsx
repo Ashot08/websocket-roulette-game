@@ -10,7 +10,7 @@ import Roulette from "../Roulette/Roulette.jsx";
 import Login from "../Login/Login.jsx";
 import {useDispatch, useSelector} from "react-redux";
 import './game.css';
-import {hidePopupAction} from "../../store/popupReducer.js";
+import {hidePopupAction, showPopupAction} from "../../store/popupReducer.js";
 import {Quiz} from "../Quiz/Quiz.jsx";
 
 
@@ -53,6 +53,14 @@ function Game (props) {
     const onHideQuestion = () => {
         props.socket.current.send(JSON.stringify({action: 'get_game_state', game_id: params.gameId, getQuestion: false}));
     }
+    const onGetGameLink = () => {
+        dispatch(showPopupAction({
+                title: 'Поделиться ссылкой',
+                content: '',
+                gameId: game.id
+            }
+        ));
+    }
 
     return (
         <>
@@ -83,6 +91,9 @@ function Game (props) {
                                             </ul>
 
                                         </li>
+                                        <li>
+                                            <Button variant="outlined" onClick={onGetGameLink} >Ссылка на игру</Button>
+                                        </li>
                                     </ul>
                                     {
                                         ( game.players[game.turn].id == player.id || game.moderator.id == player.id )
@@ -97,6 +108,7 @@ function Game (props) {
                                             }
                                         </div>
                                     }
+
                                 </aside>}
 
                                 {(game.status === 'finished') && <BasicCard name={'Игра ' + game.id} id={'Завершена'} />}

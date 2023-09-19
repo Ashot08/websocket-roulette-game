@@ -12,6 +12,7 @@ export const Quiz = (props) => {
     const questionNumber = useSelector(state => state.game.game.question.question);
     const [answer, setAnswer] = useState('');
     const [answerStatus, setAnswerStatus] = useState('in_process');
+
     const getQuestion = () => {
         setAnswer('');
         setAnswerStatus('in_process');
@@ -58,7 +59,7 @@ export const Quiz = (props) => {
                             onChange={(e) => setAnswer(e.target.value)}
                         >
                             {
-                            quiz.questions[questionNumber].answers.map(a => <FormControlLabel key={questionNumber + a} value={a} control={<Radio />} label={a} /> )
+                                quiz.questions[questionNumber].answers.map(a => <FormControlLabel key={questionNumber + a} value={a} control={<Radio />} label={a} /> )
                             }
 
                         </RadioGroup>
@@ -80,7 +81,7 @@ export const Quiz = (props) => {
                         (answerStatus == 'failed')
                         &&
                         <div>
-                            <h3>Ошибка!</h3>
+                            <h3>Ответ неверный!</h3>
                             {props.isMyTurn && <Button onClick={getQuestion} variant={'contained'}>Взять ещё один вопрос</Button>}
                         </div>
 
@@ -90,4 +91,23 @@ export const Quiz = (props) => {
             </div>
         </div>
     </>
+}
+
+
+function shuffle(array) {
+    let currentIndex = array.length,  randomIndex;
+
+    // While there remain elements to shuffle.
+    while (currentIndex > 0) {
+
+        // Pick a remaining element.
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        // And swap it with the current element.
+        [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex], array[currentIndex]];
+    }
+
+    return array;
 }

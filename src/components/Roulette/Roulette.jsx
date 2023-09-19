@@ -134,7 +134,7 @@ export default (props) => {
                     innerRadius={8}
                     radiusLineWidth={1}
                     textDistance={55}
-                    spinDuration={1.25}
+                    spinDuration={0.2}
                     pointerProps={{src: arrowImage}}
                     onStopSpinning={() => {
                         const turn = props.game.turn;

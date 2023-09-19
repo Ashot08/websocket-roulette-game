@@ -76,13 +76,18 @@
         height: 100%;
         align-items: flex-start;
         padding: 20px;
+        border-top: 3px solid rgba(0,0,0,0.1);
     }
     .game_state > ul{
         order: 2;
+        margin: 0;
     }
     .game_desk{
         overflow: hidden;
+        overflow-y: auto;
         justify-content: flex-end;
+        align-items: flex-start;
+        height: 65vh;
     }
     .game_desk_centered{
         justify-content: center;
