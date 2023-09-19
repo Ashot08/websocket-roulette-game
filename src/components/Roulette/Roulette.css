@@ -9,6 +9,13 @@
     padding-bottom: 60px;
     text-align: right;
 }
+.roll_result_content{
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: #c50000;
+    font-size: 18px;
+}
 @media(max-width: 768px){
     .rouletteWrapper{
         display: flex;

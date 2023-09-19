@@ -13,6 +13,8 @@ import AddIcon from '@mui/icons-material/Add';
 import QRCode from "react-qr-code";
 import {Chip} from "@mui/material";
 import {Link} from "react-router-dom";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from '@mui/icons-material/Close';
 
 export default function Popup (props) {
     const { onClose, data, open } = props;
@@ -27,7 +29,19 @@ export default function Popup (props) {
 
     return (
         <Dialog onClose={handleClose} open={open}>
-            <DialogTitle sx={{textAlign: 'center'}}>{data?.title}</DialogTitle>
+            <DialogTitle sx={{textAlign: 'left'}}>{data?.title}</DialogTitle>
+            <IconButton
+                aria-label="close"
+                onClick={handleClose}
+                sx={{
+                    position: 'absolute',
+                    right: 8,
+                    top: 8,
+                    color: (theme) => theme.palette.grey[500],
+                }}
+            >
+                <CloseIcon />
+            </IconButton>
             <List sx={{ pt: 0 }}>
 
                 {data?.content}

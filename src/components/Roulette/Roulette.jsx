@@ -10,7 +10,13 @@ import {offRollAction} from "../../store/gameReducer.js";
 import {Quiz} from "../Quiz/Quiz.jsx";
 import {ButtonGroup} from "@mui/material";
 import Button from "@mui/material/Button";
-import sound from './audio/volchok_sound.mp3';
+import bonusIcon from './img/icons/bonus.png';
+import microIcon from './img/icons/micro.png';
+import lightIcon from './img/icons/light.png';
+import hardIcon from './img/icons/hard.png';
+import groupIcon from './img/icons/group.png';
+import letalIcon from './img/icons/letal.png';
+import groupLetalIcon from './img/icons/group_letal.png';
 
 const data = [
     {
@@ -24,7 +30,8 @@ const data = [
             fontSize: 14,
             textColor: '#fff'
         },
-        fullName: 'Групповой, летальный НС'
+        fullName: 'Групповой, летальный НС',
+        icon: groupLetalIcon,
     },
     {
         option: 'Бонус',
@@ -34,7 +41,8 @@ const data = [
             fontSize: 16,
             textColor: '#fff'
         },
-        fullName: 'всё ок, бонус!'
+        fullName: 'Бонус!',
+        icon: bonusIcon,
     },
     {
         option: 'Тяжелый',
@@ -44,7 +52,8 @@ const data = [
             fontSize: 16,
             textColor: '#fff'
         },
-        fullName: 'Тяжелый НС'
+        fullName: 'Тяжелый НС',
+        icon: hardIcon,
     },
     {
         option: 'Микротравма',
@@ -54,7 +63,8 @@ const data = [
             fontSize: 16,
             textColor: '#333'
         },
-        fullName: 'Микротравма'
+        fullName: 'Микротравма',
+        icon: microIcon,
     },
     {
         option: 'Летальный',
@@ -64,7 +74,8 @@ const data = [
             fontSize: 16,
             textColor: '#fff'
         },
-        fullName: 'Летальный НС'
+        fullName: 'Летальный НС',
+        icon: letalIcon,
     },
     {
         option: 'Легкий',
@@ -74,7 +85,8 @@ const data = [
             fontSize: 16,
             textColor: '#333'
         },
-        fullName: 'Легкий НС'
+        fullName: 'Легкий НС',
+        icon: lightIcon,
     },
     {
         option: 'Групповой',
@@ -84,7 +96,8 @@ const data = [
             fontSize: 16,
             textColor: '#fff'
         },
-        fullName: 'Групповой НС'
+        fullName: 'Групповой НС',
+        icon: groupIcon,
     },
     {
         option: 'Микротравма',
@@ -94,7 +107,8 @@ const data = [
             fontSize: 16,
             textColor: '#333'
         },
-        fullName: 'Микротравма'
+        fullName: 'Микротравма',
+        icon: microIcon,
     },
 ]
 export default (props) => {
@@ -139,13 +153,20 @@ export default (props) => {
                     onStopSpinning={() => {
                         const turn = props.game.turn;
                         dispatch(showPopupAction({
-                                title: '',
+                                title: <>
+                                    Ход  <strong>{props.game.players[turn].name}</strong>
+                                </>,
                                 content: <BasicCard
                                     style={{textAlign: 'center'}}
-                                    name={<div style={{textAlign: 'center'}}>
-                                        Ход  <strong>{props.game.players[turn].name}</strong>
-                                    </div>}
-                                    id={`У ${props.game.players[turn].name} на предприятии ${data[prizeNumber].fullName}`} />,
+                                    name={''}
+                                    id={<div className={'roll_result_content'}>
+                                        <div>
+                                            <img src={data[prizeNumber].icon} alt={data[prizeNumber].fullName}/>
+                                        </div>
+                                        <div>
+                                            {data[prizeNumber].fullName}
+                                        </div>
+                                    </div>} />,
                             }
                         ));
                         setMustSpin(false);

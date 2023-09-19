@@ -49,8 +49,8 @@ export const Quiz = (props) => {
     return <>
         <div className={'quiz'}>
             <div className={'variants'}>
-                <form onSubmit={onSubmit}>
-                    <FormControl>
+                <form style={{textAlign: 'left'}} onSubmit={onSubmit}>
+                    <FormControl sx={{width: '100%'}}>
                         <FormLabel id="demo-radio-buttons-group-label">{quiz.questions[questionNumber].question}</FormLabel>
                         <RadioGroup
                             aria-labelledby="demo-radio-buttons-group-label"

@@ -12,7 +12,7 @@ import {useDispatch, useSelector} from "react-redux";
 import './game.css';
 import {hidePopupAction, showPopupAction} from "../../store/popupReducer.js";
 import {Quiz} from "../Quiz/Quiz.jsx";
-
+import CasinoIcon from '@mui/icons-material/Casino';
 
 function Game (props) {
     const dispatch = useDispatch();
@@ -48,7 +48,7 @@ function Game (props) {
         props.socket.current.send(JSON.stringify({action: 'get_game_state', game_id: params.gameId, nextTurn: true}));
     }
     const onGetQuestion = () => {
-        props.socket.current.send(JSON.stringify({action: 'get_game_state', game_id: params.gameId, getQuestion: true, questionNumber: Math.floor(Math.random() * 6)}));
+        props.socket.current.send(JSON.stringify({action: 'get_game_state', game_id: params.gameId, getQuestion: true, questionNumber: Math.floor(Math.random() * 180)}));
     }
     const onHideQuestion = () => {
         props.socket.current.send(JSON.stringify({action: 'get_game_state', game_id: params.gameId, getQuestion: false}));
@@ -79,21 +79,22 @@ function Game (props) {
                                     <ul>
                                         {game.moderator.id == player.id && <li><strong>Режим модератора:</strong> ON</li>}
                                         <li><strong>Игрок:</strong> {player.name}</li>
-                                        <li><strong>Игра:</strong> {game.id}</li>
+                                        <li>
+                                            <strong>Игра:</strong> {game.id}
+                                            <button style={{marginLeft: 5}} onClick={onGetGameLink} >Ссылка на игру</button>
+                                        </li>
                                         {/*<li><strong>Статус:</strong> {game.status}</li>*/}
                                         <li><strong>Следующее вращение:</strong> {game.players[game.turn].name}</li>
                                         {game.result && <li><strong>Результат предыдущего:</strong> {game.players[game.result.turn].name} - {game.result.prize}</li> }
 
                                         <li>
                                             <strong>Игроки:</strong>
-                                            <ul>
-                                                {game.players.map(p => <li key={'players' + p.id}>{p.name}</li>)}
+                                            <ul className={'game_state_players'}>
+                                                {game.players.map(p => <li key={'players' + p.id}>{p.name} {(game.players[game.turn].id == p.id) && <CasinoIcon sx={{ width: 15 }} /> }</li>)}
                                             </ul>
 
                                         </li>
-                                        <li>
-                                            <Button variant="outlined" onClick={onGetGameLink} >Ссылка на игру</Button>
-                                        </li>
+
                                     </ul>
                                     {
                                         ( game.players[game.turn].id == player.id || game.moderator.id == player.id )

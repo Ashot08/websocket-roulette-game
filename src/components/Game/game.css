@@ -65,6 +65,10 @@
 .game_state > ul > li:last-child{
     border-bottom: 1px solid rgba(0,0,0,0.1);
 }
+.game_state_players li{
+    display: flex;
+    align-items: center;
+}
 @media(max-width: 768px){
     .gameWrapper{
         flex-wrap: wrap;
