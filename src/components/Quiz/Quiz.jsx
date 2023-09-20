@@ -1,8 +1,8 @@
 import { quiz } from './quiz';
+import { order } from './order';
 import {useDispatch, useSelector} from "react-redux";
-import {ButtonGroup, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup} from "@mui/material";
+import {FormControl, FormControlLabel, FormLabel, Radio, RadioGroup} from "@mui/material";
 import Button from "@mui/material/Button";
-import {showQuestionAction} from "../../store/quizReducer.js";
 import './quiz.css';
 import {useEffect, useState} from "react";
 import {showNotificationAction} from "../../store/notificationReducer.js";
@@ -13,6 +13,19 @@ export const Quiz = (props) => {
     const [answer, setAnswer] = useState('');
     const [answerStatus, setAnswerStatus] = useState('in_process');
 
+    let orderNumber = 0;
+    if(questionNumber < 150) {
+        orderNumber = 1;
+    }
+    if(questionNumber <  110) {
+        orderNumber = 2;
+    }
+    if(questionNumber <  60) {
+        orderNumber = 2;
+    }
+    if(questionNumber < 30) {
+        orderNumber = 0;
+    }
     const getQuestion = () => {
         setAnswer('');
         setAnswerStatus('in_process');
@@ -53,13 +66,18 @@ export const Quiz = (props) => {
                     <FormControl sx={{width: '100%'}}>
                         <FormLabel id="demo-radio-buttons-group-label">{quiz.questions[questionNumber].question}</FormLabel>
                         <RadioGroup
+                            sx={{display: 'grid'}}
                             aria-labelledby="demo-radio-buttons-group-label"
                             defaultValue=""
                             name="radio-buttons-group"
                             onChange={(e) => setAnswer(e.target.value)}
                         >
                             {
-                                quiz.questions[questionNumber].answers.map(a => <FormControlLabel key={questionNumber + a} value={a} control={<Radio />} label={a} /> )
+                                quiz.questions[questionNumber].answers.map(a => <FormControlLabel sx={
+                                    {
+                                        order: order[orderNumber][quiz.questions[questionNumber].answers.indexOf(a)]
+                                    }
+                                } key={questionNumber + a} value={a} control={<Radio />} label={a} /> )
                             }
 
                         </RadioGroup>
