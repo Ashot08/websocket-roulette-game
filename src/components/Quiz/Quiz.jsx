@@ -6,6 +6,7 @@ import Button from "@mui/material/Button";
 import './quiz.css';
 import {useEffect, useState} from "react";
 import {showNotificationAction} from "../../store/notificationReducer.js";
+import {setAnswersStat} from "../../store/quizReducer.js";
 
 export const Quiz = (props) => {
     const dispatch = useDispatch();
@@ -50,11 +51,13 @@ export const Quiz = (props) => {
                 text: `Вы ответили правильно!`,
                 status: 'success'
             }))
+            dispatch(setAnswersStat(1));
         }else{
             dispatch(showNotificationAction({
                 text: `Вы ошиблись!`,
                 status: 'error'
             }))
+            dispatch(setAnswersStat(0));
             setAnswerStatus('failed');
         }
     }

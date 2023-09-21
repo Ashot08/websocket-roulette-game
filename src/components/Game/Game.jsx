@@ -13,12 +13,15 @@ import './game.css';
 import {hidePopupAction, showPopupAction} from "../../store/popupReducer.js";
 import {Quiz} from "../Quiz/Quiz.jsx";
 import CasinoIcon from '@mui/icons-material/Casino';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import DangerousIcon from '@mui/icons-material/Dangerous';
 
 function Game (props) {
     const dispatch = useDispatch();
     const params = useParams();
     const player = useSelector(state => state.player.player);
     const game = useSelector(state => state.game.game);
+    const answersStat = useSelector(state => state.quiz.quiz.answersStat);
     const isWebsocketConnect = useSelector(state => state.websocket.websocket.isConnect);
 
     useEffect(() => {
@@ -80,7 +83,7 @@ function Game (props) {
                                         {game.moderator.id == player.id && <li><strong>Режим модератора:</strong> ON</li>}
                                         <li><strong>Игрок:</strong> {player.name}</li>
                                         <li>
-                                            <strong>Игра:</strong> {game.id}
+                                            <strong>Игра:</strong> {game.title} ({game.id})
                                             <button style={{marginLeft: 5}} onClick={onGetGameLink} >Ссылка на игру</button>
                                         </li>
                                         {/*<li><strong>Статус:</strong> {game.status}</li>*/}
@@ -90,7 +93,15 @@ function Game (props) {
                                         <li>
                                             <strong>Игроки:</strong>
                                             <ul className={'game_state_players'}>
-                                                {game.players.map(p => <li key={'players' + p.id}>{p.name} {(game.players[game.turn].id == p.id) && <CasinoIcon sx={{ width: 15 }} /> }</li>)}
+                                                {game.players.map((p) => {
+                                                    return (
+                                                        <li key={'players' + p.id}>
+                                                            {(game.players[game.turn].id == p.id) && <CasinoIcon sx={{ width: 15 }} /> }
+                                                            {p.name}
+                                                            {(game.players[game.turn].id == p.id) && answersStat.map( (a) => { return a ? <CheckCircleOutlineIcon sx={{color: 'green'}} /> : <DangerousIcon sx={{color: 'red'}} /> }) }
+                                                        </li>
+                                                    )
+                                                })}
                                             </ul>
 
                                         </li>
@@ -112,7 +123,7 @@ function Game (props) {
 
                                 </aside>}
 
-                                {(game.status === 'finished') && <BasicCard name={'Игра ' + game.id} id={'Завершена'} />}
+                                {(game.status === 'finished') && <BasicCard name={'Игра ' + game.title ? game.title : game.id } id={'Завершена'} />}
                                 {(game.status === 'created')
                                     &&
                                     <div className={'game_desk game_desk_centered'}>
@@ -121,7 +132,7 @@ function Game (props) {
                                                 {player && <BasicCard name={''} id={game.players[game.turn].name} />}
                                             </div>
                                             <BasicCard
-                                                name={'Игра ' + game.id}
+                                                name={'Игра ' + game.title ? game.title : params.id }
                                                 id={`Ожидает, когда наберется ${game.players_count} игроков (сейчас ${game.players.length} из ${game.players_count})`}
                                                 content={
                                                     <List>{
@@ -165,7 +176,7 @@ function Game (props) {
                             <div className={'game_desk game_desk_centered'}>
                                 <div>
                                     <>
-                                        <h1>ИГРА {params.gameId}</h1>
+                                        <h1>ИГРА {game && game.title}</h1>
                                         {player && <BasicCard name={player.name} id={'id: ' + player.id} />}
                                     </>
 

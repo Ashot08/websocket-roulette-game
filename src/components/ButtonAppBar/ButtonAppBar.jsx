@@ -88,7 +88,7 @@ export default function ButtonAppBar(props) {
                                         return (
                                             <ListItemButton key={'game' + g[0]} sx={{pl: 4}}>
                                                 <Link to={'/game/' + g[0]}>
-                                                    <ListItemText primary={'Игра ' + g[0]}/>
+                                                    <ListItemText primary={'Игра ' + g[1].title}/>
                                                 </Link>
                                             </ListItemButton>
                                         );

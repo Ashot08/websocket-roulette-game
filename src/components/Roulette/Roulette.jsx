@@ -17,6 +17,7 @@ import hardIcon from './img/icons/hard.png';
 import groupIcon from './img/icons/group.png';
 import letalIcon from './img/icons/letal.png';
 import groupLetalIcon from './img/icons/group_letal.png';
+import {clearAnswersStat} from "../../store/quizReducer.js";
 
 const data = [
     {
@@ -169,6 +170,7 @@ export default (props) => {
                                     </div>} />,
                             }
                         ));
+                        dispatch(clearAnswersStat());
                         setMustSpin(false);
                         dispatch(offRollAction());
                     }}

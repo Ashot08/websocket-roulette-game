@@ -12,21 +12,33 @@ import {
 } from "@mui/material";
 
 import BasicCard from "../Card/BasicCard.jsx";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import Login from "../Login/Login.jsx";
+import {showNotificationAction} from "../../store/notificationReducer.js";
 
 function StartPage (props) {
     const [gameIdInput, setGameIdInput] = useState('');
     const player = useSelector(state => state.player.player);
     const [playersCount, setPlayersCount] = useState(3);
+    const [gameTitle, setGameTitle] = useState('');
     const [moderatorMode, setModeratorMode] = useState(false);
-
+    const dispatch = useDispatch();
     const createGame = async (e) => {
         e.preventDefault();
+
+        if(!gameTitle) {
+            dispatch(showNotificationAction({
+                text: 'Поле "Название игры" является обязательным',
+                status: 'error'
+            }));
+            return;
+        }
+
         if(moderatorMode) {
             props.socket.current.send(JSON.stringify({
                 action: 'create_game',
                 game: {
+                    title: gameTitle,
                     status: 'created',
                     players: [],
                     players_count: playersCount,
@@ -37,6 +49,7 @@ function StartPage (props) {
             props.socket.current.send(JSON.stringify({
                 action: 'create_game',
                 game: {
+                    title: gameTitle,
                     status: 'created',
                     players: [player],
                     players_count: playersCount,
@@ -82,6 +95,20 @@ function StartPage (props) {
                                             value={player.name}
                                             disabled={true}
                                         />
+                                        <FormControl sx={{my: 2}} fullWidth>
+                                            <TextField
+                                                sx={{width: '100%'}}
+                                                id="game-title-input"
+                                                label={'Название игры'}
+                                                variant="outlined"
+                                                type="text"
+                                                name={'game-title'}
+                                                placeholder={'Введите название'}
+                                                value={gameTitle}
+                                                onChange={(e) => setGameTitle(e.target.value)}
+                                                required={true}
+                                            />
+                                        </FormControl>
                                         <FormControl sx={{my: 2}} fullWidth>
                                             <InputLabel id="demo-simple-select-label">Количество игроков</InputLabel>
                                             <Select
