@@ -60,6 +60,7 @@ export const Quiz = (props) => {
             dispatch(setAnswersStat(0));
             setAnswerStatus('failed');
         }
+
     }
 
     return <>

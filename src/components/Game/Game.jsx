@@ -15,6 +15,7 @@ import {Quiz} from "../Quiz/Quiz.jsx";
 import CasinoIcon from '@mui/icons-material/Casino';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import DangerousIcon from '@mui/icons-material/Dangerous';
+import {clearAnswersStat} from "../../store/quizReducer.js";
 
 function Game (props) {
     const dispatch = useDispatch();
@@ -38,6 +39,11 @@ function Game (props) {
 
     }, [props.socket.current, params.gameId]);
 
+    useEffect(() => {
+        if(props.socket.current) {
+            onQuizAnswer();
+        }
+    }, [answersStat])
 
     const joinGame = async (e) => {
         e.preventDefault();
@@ -49,12 +55,20 @@ function Game (props) {
     }
     const onNextPlayer = () => {
         props.socket.current.send(JSON.stringify({action: 'get_game_state', game_id: params.gameId, nextTurn: true}));
+        dispatch(clearAnswersStat());
     }
     const onGetQuestion = () => {
         props.socket.current.send(JSON.stringify({action: 'get_game_state', game_id: params.gameId, getQuestion: true, questionNumber: Math.floor(Math.random() * 180)}));
     }
     const onHideQuestion = () => {
         props.socket.current.send(JSON.stringify({action: 'get_game_state', game_id: params.gameId, getQuestion: false}));
+    }
+    const onQuizAnswer = () => {
+        if(game) {
+            if(game.players[game.turn].id == player.id) {
+                props.socket.current.send(JSON.stringify({action: 'get_game_state', game_id: params.gameId, setAnswersStat: true, answersStat}));
+            }
+        }
     }
     const onGetGameLink = () => {
         dispatch(showPopupAction({
@@ -98,7 +112,7 @@ function Game (props) {
                                                         <li key={'players' + p.id}>
                                                             {(game.players[game.turn].id == p.id) && <CasinoIcon sx={{ width: 15 }} /> }
                                                             {p.name}
-                                                            {(game.players[game.turn].id == p.id) && answersStat.map( (a) => { return a ? <CheckCircleOutlineIcon sx={{color: 'green'}} /> : <DangerousIcon sx={{color: 'red'}} /> }) }
+                                                            {(game.players[game.turn].id == p.id) && game.answersStat.map( (a) => { return a ? <CheckCircleOutlineIcon sx={{color: 'green'}} /> : <DangerousIcon sx={{color: 'red'}} /> }) }
                                                         </li>
                                                     )
                                                 })}
@@ -160,7 +174,7 @@ function Game (props) {
                                             {
                                                 game.question.show
                                                     ?
-                                                    <Quiz isMyTurn={game.players[game.turn].name == player.name} onGetQuestion={onGetQuestion} />
+                                                    <Quiz onQuizAnswer={onQuizAnswer} isMyTurn={game.players[game.turn].name == player.name} onGetQuestion={onGetQuestion} />
                                                     :
                                                     <div>
                                                         <Roulette game={game} onNextPlayer={onNextPlayer} doRoll={game.doRoll ?? false} prizeNumber={game.prizeNumber ?? 0} handleSpinClick={onRoulettePressSpin} />

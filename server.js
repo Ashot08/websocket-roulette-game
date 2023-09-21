@@ -117,6 +117,7 @@ wss.on('connection', function connection(ws) {
                 const id = nanoid(5);
                 game.turn = 0;
                 game.id = id;
+                game.answersStat = [];
                 games.set(id, game);
                 const message = {
                     type: 'message',
@@ -203,6 +204,11 @@ wss.on('connection', function connection(ws) {
                         question: 1
                     }
                 }
+
+                if(data.setAnswersStat === true) {
+                    gameState.answersStat = data.answersStat;
+                }
+
                 if(data.getQuestion === true) {
                     gameState.question.show = true;
                     gameState.question.question = data.questionNumber ?? 1;
