@@ -18,6 +18,8 @@ import groupIcon from './img/icons/group.png';
 import letalIcon from './img/icons/letal.png';
 import groupLetalIcon from './img/icons/group_letal.png';
 import {clearAnswersStat} from "../../store/quizReducer.js";
+import {mobileCheck} from "../../utils/mobileCheck.js";
+import RouletteMobile from "../RouletteMobile/RouletteMobile.jsx";
 
 const data = [
     {
@@ -131,6 +133,31 @@ export default (props) => {
         //play();
         props.handleSpinClick();
     }
+
+    const onStopSpinning = () => {
+        const turn = props.game.turn;
+        dispatch(showPopupAction({
+                title: <>
+                    Ход  <strong>{props.game.players[turn].name}</strong>
+                </>,
+                content: <BasicCard
+                    style={{textAlign: 'center'}}
+                    name={''}
+                    id={<div className={'roll_result_content'}>
+                        <div>
+                            <img src={data[prizeNumber].icon} alt={data[prizeNumber].fullName}/>
+                        </div>
+                        <div>
+                            {data[prizeNumber].fullName}
+                        </div>
+                    </div>} />,
+            }
+        ));
+        dispatch(clearAnswersStat());
+        setMustSpin(false);
+        dispatch(offRollAction());
+    }
+
     // let audio = document.querySelector("#chatAudio");
     // function play() {
     //     audio.play()
@@ -142,39 +169,24 @@ export default (props) => {
             <BasicCard name={''} id={'Ходит ' + props.game.players[props.game.turn].name} />
 
             <div className="rouletteWrapper">
-                <Wheel
-                    mustStartSpinning={mustSpin}
-                    prizeNumber={prizeNumber}
-                    data={data}
-                    innerRadius={8}
-                    radiusLineWidth={1}
-                    textDistance={55}
-                    spinDuration={0.2}
-                    pointerProps={{src: arrowImage}}
-                    onStopSpinning={() => {
-                        const turn = props.game.turn;
-                        dispatch(showPopupAction({
-                                title: <>
-                                    Ход  <strong>{props.game.players[turn].name}</strong>
-                                </>,
-                                content: <BasicCard
-                                    style={{textAlign: 'center'}}
-                                    name={''}
-                                    id={<div className={'roll_result_content'}>
-                                        <div>
-                                            <img src={data[prizeNumber].icon} alt={data[prizeNumber].fullName}/>
-                                        </div>
-                                        <div>
-                                            {data[prizeNumber].fullName}
-                                        </div>
-                                    </div>} />,
-                            }
-                        ));
-                        dispatch(clearAnswersStat());
-                        setMustSpin(false);
-                        dispatch(offRollAction());
-                    }}
-                />
+
+                {mobileCheck() ?
+                    <RouletteMobile onStopSpinning={onStopSpinning} mustSpin={props.mustSpin} prizeNumber={props.prizeNumber} nextTurn={props.game.nextTurn}  />
+                    :
+                    <Wheel
+                        mustStartSpinning={mustSpin}
+                        prizeNumber={prizeNumber}
+                        data={data}
+                        innerRadius={8}
+                        radiusLineWidth={1}
+                        textDistance={55}
+                        spinDuration={0.2}
+                        pointerProps={{src: arrowImage}}
+                        onStopSpinning={onStopSpinning}
+                    />
+                }
+
+
             </div>
             <div className="rouletteButtonWrapper">
 

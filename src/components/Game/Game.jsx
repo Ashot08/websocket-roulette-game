@@ -16,6 +16,9 @@ import CasinoIcon from '@mui/icons-material/Casino';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import DangerousIcon from '@mui/icons-material/Dangerous';
 import {clearAnswersStat} from "../../store/quizReducer.js";
+import RouletteMobile from "../RouletteMobile/RouletteMobile.jsx";
+import {mobileCheck} from "../../utils/mobileCheck.js";
+
 
 function Game (props) {
     const dispatch = useDispatch();
@@ -177,7 +180,9 @@ function Game (props) {
                                                     <Quiz onQuizAnswer={onQuizAnswer} isMyTurn={game.players[game.turn].name == player.name} onGetQuestion={onGetQuestion} />
                                                     :
                                                     <div>
+
                                                         <Roulette game={game} onNextPlayer={onNextPlayer} doRoll={game.doRoll ?? false} prizeNumber={game.prizeNumber ?? 0} handleSpinClick={onRoulettePressSpin} />
+
                                                     </div>
                                             }
                                         </div>
