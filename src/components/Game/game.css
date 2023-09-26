@@ -89,8 +89,8 @@
     .game_desk{
         overflow: hidden;
         overflow-y: auto;
-        justify-content: flex-end;
-        align-items: flex-start;
+        justify-content: center;
+        align-items: center;
         height: 65vh;
     }
     .game_desk_centered{

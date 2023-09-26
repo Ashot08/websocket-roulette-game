@@ -171,7 +171,7 @@ export default (props) => {
             <div className="rouletteWrapper">
 
                 {mobileCheck() ?
-                    <RouletteMobile onStopSpinning={onStopSpinning} mustSpin={props.mustSpin} prizeNumber={props.prizeNumber} nextTurn={props.game.nextTurn}  />
+                    <RouletteMobile onStopSpinning={onStopSpinning} mustSpin={mustSpin} prizeNumber={props.prizeNumber} nextTurn={props.game.nextTurn}  />
                     :
                     <Wheel
                         mustStartSpinning={mustSpin}

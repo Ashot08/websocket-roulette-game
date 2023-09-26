@@ -206,22 +206,24 @@ const RouletteMobile = (props) => {
     }, [prizeIndex, start]);
 
     useEffect(() => {
-
         setSpinning(props.mustSpin);
 
+        if (!spinning || !prizeList.length) {
+            console.log(spinning)
+            return;
+        }
+
         const prepare = async () => {
-            //const newPrizeIndex = await API.getPrizeIndex();
             const newPrizeIndex = await API.getPrizeIndex();
             setPrizeIndex(newPrizeIndex);
             setStart(false);
-
+            setSpinning(false);
             const { id } = prizeList[newPrizeIndex];
 
             console.log({ icon: 'info', title: `Вращаем..` });
         };
-
         prepare();
-    }, [props.mustSpin, props.prizeNumber, props.nextTurn]);
+    }, [props.mustSpin, props.prizeNumber]);
 
 
     const handlePrizeDefined = props.onStopSpinning;
