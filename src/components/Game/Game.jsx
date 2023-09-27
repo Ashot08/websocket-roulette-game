@@ -168,6 +168,8 @@ function Game (props) {
                                                     </List>
                                                 }
                                             />
+                                            <br/>
+                                            <button style={{marginLeft: 5}} onClick={onGetGameLink} >Ссылка на игру</button>
                                         </div>
                                     </div>
                                 }

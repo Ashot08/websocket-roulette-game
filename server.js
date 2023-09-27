@@ -211,7 +211,7 @@ wss.on('connection', function connection(ws) {
 
                 if(data.getQuestion === true) {
                     gameState.question.show = true;
-                    gameState.question.question = data.questionNumber ?? 1;
+                    gameState.question.question = data.questionNumber ? data.questionNumber : 1;
                 } else if(data.getQuestion === false) {
                     gameState.question.show = false;
                 }
