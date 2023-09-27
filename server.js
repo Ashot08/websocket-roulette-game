@@ -232,7 +232,39 @@ wss.on('connection', function connection(ws) {
                         prize: null,
                     }
                     doRoll = true;
-                    gameState.prizeNumber = Math.floor(Math.random() * rouletteData.length);
+
+                    const odds = [
+                        5,
+                        15,
+                        11,
+                        15,
+                        7,
+                        17,
+                        15,
+                        15
+                    ]
+                    const randomNumber = Math.ceil(Math.random() * 100);
+
+                    if(randomNumber <= 5) {
+                        gameState.prizeNumber = 0;
+                    } else if(randomNumber <= 20) {
+                        gameState.prizeNumber = 1;
+                    } else if(randomNumber <= 31) {
+                        gameState.prizeNumber = 2;
+                    } else if(randomNumber <= 46) {
+                        gameState.prizeNumber = 3;
+                    } else if(randomNumber <= 53) {
+                        gameState.prizeNumber = 4;
+                    } else if(randomNumber <= 70) {
+                        gameState.prizeNumber = 5;
+                    } else if(randomNumber <= 85) {
+                        gameState.prizeNumber = 6;
+                    } else {
+                        gameState.prizeNumber = 7;
+                    }
+
+
+                    //gameState.prizeNumber = Math.floor(Math.random() * rouletteData.length);
                     //gameState.prizeNumber = 3;
                     result.prizeNumber = gameState.prizeNumber;
                     result.prize = rouletteData[gameState.prizeNumber].fullName;

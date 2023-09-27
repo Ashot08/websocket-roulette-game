@@ -35,6 +35,7 @@ const data = [
         },
         fullName: 'Групповой, летальный НС',
         icon: groupLetalIcon,
+        category: '6 + 1',
     },
     {
         option: 'Бонус',
@@ -46,6 +47,7 @@ const data = [
         },
         fullName: 'Бонус!',
         icon: bonusIcon,
+        category: '',
     },
     {
         option: 'Тяжелый',
@@ -57,6 +59,7 @@ const data = [
         },
         fullName: 'Тяжелый НС',
         icon: hardIcon,
+        category: '4',
     },
     {
         option: 'Микротравма',
@@ -68,6 +71,7 @@ const data = [
         },
         fullName: 'Микротравма',
         icon: microIcon,
+        category: '1',
     },
     {
         option: 'Летальный',
@@ -79,6 +83,7 @@ const data = [
         },
         fullName: 'Летальный НС',
         icon: letalIcon,
+        category: '5',
     },
     {
         option: 'Легкий',
@@ -90,6 +95,7 @@ const data = [
         },
         fullName: 'Легкий НС',
         icon: lightIcon,
+        category: '2',
     },
     {
         option: 'Групповой',
@@ -101,6 +107,7 @@ const data = [
         },
         fullName: 'Групповой НС',
         icon: groupIcon,
+        category: '3 + 1',
     },
     {
         option: 'Микротравма',
@@ -112,6 +119,7 @@ const data = [
         },
         fullName: 'Микротравма',
         icon: microIcon,
+        category: '1',
     },
 ]
 export default (props) => {
@@ -150,6 +158,14 @@ export default (props) => {
                         <div>
                             {data[prizeNumber].fullName}
                         </div>
+                        <div style={{textTransform: 'none', color: '#000'}}>
+                            {(prizeNumber === 1) ?
+                                'Вы получаете 1 защиту'
+                                :
+                                'Тяжесть: ' + data[prizeNumber].category
+                            }
+
+                        </div>
                     </div>} />,
             }
         ));
@@ -171,7 +187,7 @@ export default (props) => {
             <div className="rouletteWrapper">
 
                 {mobileCheck() ?
-                    <RouletteMobile onStopSpinning={onStopSpinning} mustSpin={props.doRoll} prizeNumber={props.prizeNumber} nextTurn={props.game.nextTurn}  />
+                    <RouletteMobile onStopSpinning={onStopSpinning} mustSpin={mustSpin} prizeNumber={props.prizeNumber} nextTurn={props.game.nextTurn}  />
                     :
                     <Wheel
                         mustStartSpinning={mustSpin}

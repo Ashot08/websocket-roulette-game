@@ -157,4 +157,14 @@ body {
   background: linear-gradient(to bottom, red 0%, #f00000 50%, #c50000 100%);
   z-index: -2;
 }
+@media(max-width: 768px){
 
+  .mobileRoulette{
+    height: 50vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+}

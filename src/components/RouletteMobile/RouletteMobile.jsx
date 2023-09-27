@@ -171,7 +171,6 @@ const RouletteMobile = (props) => {
             //const randomPrizeIndex = getRandomIntInRange(0, prizes.length - 1);
             const randomPrizeIndex = props.prizeNumber;
 
-
             const randomPrizeIndexOffset = prizes.length * 4;
 
             return randomPrizeIndex + randomPrizeIndexOffset;
@@ -196,31 +195,34 @@ const RouletteMobile = (props) => {
 
     }, []);
 
+    // useEffect(() => {
+    //     if (!prizeIndex || start) {
+    //         return;
+    //     }
+    //     setStart(props.mustSpin);
+    // }, [props.mustSpin, props.prizeNumber]);
+
     useEffect(() => {
-        if (!prizeIndex || start) {
+        if (!prizeList.length || !props.mustSpin) {
             return;
         }
         setStart(props.mustSpin);
-    }, [prizeIndex, start, props.mustSpin, props.prizeNumber]);
-
-    useEffect(() => {
-        if (!prizeList.length) {
-            return;
-        }
-
         const prepare = async () => {
             const newPrizeIndex = await API.getPrizeIndex();
             setPrizeIndex(newPrizeIndex);
-            setStart(props.mustSpin);
+
             const { id } = prizeList[newPrizeIndex];
 
             console.log({ icon: 'info', title: `Вращаем..` });
         };
         prepare();
-    }, [props.mustSpin, props.prizeNumber]);
+    }, [props.prizeNumber, props.mustSpin]);
 
 
-    const handlePrizeDefined = props.onStopSpinning;
+    const handlePrizeDefined = () => {
+        props.onStopSpinning();
+        setStart(false);
+    }
 
     const type = settings.type.value;
     const design = settings.design.value;
@@ -235,7 +237,7 @@ const RouletteMobile = (props) => {
 
 
     return (
-        <div>
+        <div className={'mobileRoulette'}>
             <div className={`roulette ${type}`}>
                 <RoulettePro
                     type={type}

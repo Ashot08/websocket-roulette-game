@@ -23,10 +23,6 @@
         flex-wrap: wrap;
         overflow: hidden;
     }
-    .rouletteWrapper > div{
-        min-width: 600px;
-        min-height: 600px;
-    }
     .rouletteButtonWrapper{
         position: fixed;
         bottom: 0;
