@@ -160,11 +160,14 @@ body {
 @media(max-width: 768px){
 
   .mobileRoulette{
-    height: 50vh;
     overflow: hidden;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+  }
+  .roulette-pro-wrapper-additional-styles{
+    padding: 0;
+    min-height: 230px;
   }
 
 }

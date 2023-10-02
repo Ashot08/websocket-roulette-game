@@ -122,7 +122,7 @@ const RouletteMobile = (props) => {
         type: {
             name: 'Тип',
             options: ['horizontal', 'vertical'],
-            value: 'vertical',
+            value: 'horizontal',
         },
         design: {
             name: 'Design',

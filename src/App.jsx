@@ -45,11 +45,13 @@ function App() {
 
     }, []);
 
+
     function connect(){
         //socket.current = new WebSocket("ws://80.90.189.247:3000/");
         socket.current = new WebSocket("ws://localhost:3000/");
 
         socket.current.onopen = function(e) {
+
             dispatch(showNotificationAction({
                 text: `[open] Соединение установлено. Отправляем данные на сервер.`,
                 status: 'success'
