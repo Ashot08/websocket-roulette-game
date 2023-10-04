@@ -111,6 +111,7 @@ function App() {
                             ...data.state,
                             doRoll: data.doRoll,
                             nextTurn: data.nextTurn,
+                            quizTimer: data.quizTimer,
                         }))
                     }
 

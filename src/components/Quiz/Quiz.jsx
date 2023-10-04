@@ -7,6 +7,8 @@ import './quiz.css';
 import {useEffect, useState} from "react";
 import {showNotificationAction} from "../../store/notificationReducer.js";
 import {setAnswersStat} from "../../store/quizReducer.js";
+import Timer from "../Timer/Timer.jsx";
+import {offQuizTimerAction} from "../../store/gameReducer.js";
 
 export const Quiz = (props) => {
     const dispatch = useDispatch();
@@ -63,6 +65,16 @@ export const Quiz = (props) => {
 
     }
 
+    const time = new Date();
+    time.setSeconds(time.getSeconds() + 3);
+
+    const onExpire = () => {
+        dispatch(offQuizTimerAction());
+        if(answerStatus !== 'success') {
+            setAnswerStatus('failed')
+        }
+    }
+
     return <>
         <div className={'quiz'}>
             <div className={'variants'}>
@@ -90,12 +102,15 @@ export const Quiz = (props) => {
                     {
                         <Button disabled={answerStatus !== 'in_process'} type={'submit'} variant={'contained'}>Ответить</Button>
                     }
+
+                    {props.quizTimer && <Timer expiryTimestamp={time} onExpire={onExpire} />}
+
                     {
                         (answerStatus == 'success')
                         &&
                         <div>
                             <h3>Верно!</h3>
-                            {props.isMyTurn && <Button onClick={getQuestion} variant={'contained'}>Взять ещё один вопрос</Button>}
+                            {props.isMyTurn && <Button disabled={props.quizTimer} onClick={getQuestion} variant={'contained'}>Взять ещё один вопрос</Button>}
                         </div>
 
                     }
@@ -104,7 +119,7 @@ export const Quiz = (props) => {
                         &&
                         <div>
                             <h3>Ответ неверный!</h3>
-                            {props.isMyTurn && <Button onClick={getQuestion} variant={'contained'}>Взять ещё один вопрос</Button>}
+                            {props.isMyTurn && <Button disabled={props.quizTimer} onClick={getQuestion} variant={'contained'}>Взять ещё один вопрос</Button>}
                         </div>
 
                     }

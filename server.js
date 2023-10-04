@@ -197,6 +197,7 @@ wss.on('connection', function connection(ws) {
                 const gameState = games.get(gameId);
                 let doRoll = false;
                 let nextTurn = false;
+                let quizTimer = false;
 
                 if(typeof gameState === 'object' && !gameState.question) {
                     gameState.question = {
@@ -207,6 +208,7 @@ wss.on('connection', function connection(ws) {
 
                 if(data.setAnswersStat === true) {
                     gameState.answersStat = data.answersStat;
+                    quizTimer = true;
                 }
 
                 if(data.getQuestion === true) {
@@ -290,6 +292,7 @@ wss.on('connection', function connection(ws) {
                     },
                     doRoll,
                     nextTurn,
+                    quizTimer,
                     id: gameId,
                 }
                 broadcastMessage(message);

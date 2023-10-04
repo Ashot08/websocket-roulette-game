@@ -179,7 +179,7 @@ function Game (props) {
                                             {
                                                 game.question.show
                                                     ?
-                                                    <Quiz onQuizAnswer={onQuizAnswer} isMyTurn={game.players[game.turn].name == player.name} onGetQuestion={onGetQuestion} />
+                                                    <Quiz quizTimer={game.quizTimer} isMyTurn={game.players[game.turn].name == player.name} onGetQuestion={onGetQuestion} />
                                                     :
                                                     <div>
 
